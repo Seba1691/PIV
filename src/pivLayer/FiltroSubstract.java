@@ -8,8 +8,7 @@ import wapper.WrapperException;
 
 public class FiltroSubstract extends FiltroPreProcesamiento {
 
-	public FiltroSubstract(String configuracion) {
-		super(configuracion);
+	public FiltroSubstract() {
 		this.cantElementosProcesables = 2;
 	}
 

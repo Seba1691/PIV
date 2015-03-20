@@ -1,5 +1,7 @@
 package main;
 
+import ij.ImagePlus;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import pivLayer.FiltroPostProcesamiento;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.FiltroRemplazoVectoresInvalidosPorMediana;
 import pivLayer.FiltroSimple;
+import pivLayer.FiltroSubstract;
 import pivLayer.FiltroTestMedianaNormalizada;
 import pivLayer.Imagen;
 import pivLayer.MapaVectores;
@@ -40,11 +43,13 @@ public class MainPruebaAdapter {
 		inputImage.add(im1);
 		inputImage.add(im2);
 
-		Seleccionador seleccionador = new SeleccionadorPares();
+		Seleccionador seleccionador = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
+		
+		Seleccionador seleccionadorPre = new SeleccionadorPares(Seleccionador.SELECCIONADOR_DOBLE);
 
 		List<FiltroPreProcesamiento> listPre = new ArrayList<FiltroPreProcesamiento>();
-		listPre.add(new FiltroSimple(FiltroPreProcesamiento.FILTRO_SIMPLE));
-		Procesador preProcesador = new PreProcesador(listPre, seleccionador);
+		listPre.add(new FiltroSubstract());
+		Procesador preProcesador = new PreProcesador(listPre, seleccionadorPre);
 
 		Procesador pivProcesador = new ProcesadorPIV(new FiltroCorrelacionCruzada(), seleccionador);
 
@@ -54,7 +59,7 @@ public class MainPruebaAdapter {
 		Procesador postProcesador = new PostProcesador(listPost, seleccionador);
 
 		List<ElementoProcesable> outputPre = preProcesador.procesar(inputImage);
-
+		
 		List<ElementoProcesable> outputPIV = pivProcesador.procesar(outputPre);
 
 		List<ElementoProcesable> outputPost = postProcesador.procesar(outputPIV);
