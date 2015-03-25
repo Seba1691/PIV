@@ -1,7 +1,5 @@
 package main;
 
-import ij.ImagePlus;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import pivLayer.FiltroCorrelacionCruzada;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.FiltroRemplazoVectoresInvalidosPorMediana;
-import pivLayer.FiltroSimple;
 import pivLayer.FiltroSubstract;
 import pivLayer.FiltroTestMedianaNormalizada;
 import pivLayer.Imagen;
