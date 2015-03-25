@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jnlp spec="1.0+" codebase="http://www.jpiv.vennemann-online.de/jai/webstart/release/" >
+  <information>
+     <title>Java Advanced Imaging 1.1.3</title>
+     <vendor>Sun Microsystems Inc.</vendor>
+     <homepage href="http://jai.dev.java.net"/>
+     <description>Java Advanced Imaging API</description>
+     <offline-allowed/>
+  </information>
+
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources os="Windows">
+    <jar href="1.1.3/windows-i586/jai_core.jar" download="eager"/>
+    <jar href="1.1.3/windows-i586/jai_codec.jar" download="eager"/>
+    <jar href="1.1.3/windows-i586/mlibwrapper_jai.jar" download="eager"/>
+
+    <nativelib href="1.1.3/windows-i586/mlib_jai.dll.jar" download="eager"/>
+    <nativelib href="1.1.3/windows-i586/mlib_jai_mmx.dll.jar" download="eager"/>
+    <nativelib href="1.1.3/windows-i586/mlib_jai_util.dll.jar" download="eager"/>
+  </resources>
+
+  <resources os="Linux" arch="i386">
+    <jar href="1.1.3/linux-i586/jai_core.jar" download="eager"/>
+    <jar href="1.1.3/linux-i586/jai_codec.jar" download="eager"/>
+    <jar href="1.1.3/linux-i586/mlibwrapper_jai.jar" download="eager"/>
+
+    <nativelib href="1.1.3/linux-i586/libmlib_jai.so.jar" download="eager"/>
+  </resources>
+
+  <component-desc />
+</jnlp>

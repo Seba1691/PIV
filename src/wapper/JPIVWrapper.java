@@ -1,8 +1,12 @@
 package wapper;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
@@ -26,6 +30,12 @@ public class JPIVWrapper {
 			ImageIO.write(image2.getImage(), "png", new File(input2));
 
 			JPiv jpiv = new JPiv();
+
+			jpiv.getSettings().jpivLibPath = System.getProperty("user.dir") + "/resources/jpivlib";
+			
+			PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
+			System.setOut(defaultPrintStream);			
+			System.setErr(defaultPrintStream);
 
 			String salida = path + "salida";
 			jpiv.getSettings().pivDefaultDestFileName = salida;

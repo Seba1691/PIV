@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://www.jpiv.vennemann-online.de/" href="jpiv.jnlp">
+	<information>
+		<title>JPIV Particle Image Velocimetry</title>
+		<vendor>Peter Vennemann</vendor>
+		<homepage href="http://www.jpiv.vennemann-online.de"/>
+		<description>JPIV is a software package for Particle Image Velocimetry (PIV). Features include multi-pass PIV, sum of correlation ensemble evaluation, single pixel ensemble evaluation, vector field post processing, vector field analysis, image and vector field display, and export.</description>
+		<icon href="fig/logo64.png"/>
+		<offline-allowed/>
+	</information>
+	<resources>
+		<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" java-vm-args="-Xms128M -Xmx1024M"/>
+		<jar href="jpiv.jar" main="true" download="eager"/>
+		<extension href="http://www.jpiv.vennemann-online.de/jai/webstart/release/jai-1.1.3-latest.jnlp"/>
+	</resources>
+	<security>
+		<all-permissions/>
+	</security> 
+	<application-desc main-class="jpiv2.JPiv"/>
+</jnlp>
+
