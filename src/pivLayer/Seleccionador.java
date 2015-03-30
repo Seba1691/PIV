@@ -13,7 +13,7 @@ public abstract class Seleccionador {
 		this.setConfiguracion(configuracion);
 	}
 
-	public abstract List<ElementoProcesable> seleccionar(List<ElementoProcesable> input, int iteracion, Filtro filtro);
+	public abstract List<List<ElementoProcesable>> seleccionar(List<ElementoProcesable> input, Filtro filtro);
 
 	public String getConfiguracion() {
 		return configuracion;

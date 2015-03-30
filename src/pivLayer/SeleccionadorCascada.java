@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class SeleccionadorPares extends Seleccionador {
+public class SeleccionadorCascada extends Seleccionador {
 
-	public SeleccionadorPares(String configuracion) {
+	public SeleccionadorCascada(String configuracion) {
 		super(configuracion);
 	}
 
@@ -16,7 +16,7 @@ public class SeleccionadorPares extends Seleccionador {
 		List<List<ElementoProcesable>> seleccionados = new ArrayList<List<ElementoProcesable>>();
 		int cantElementos = filtro.getCantElementosProcesables();
 
-		for (int i = 0; i < input.size(); i += cantElementos) {
+		for (int i = 0; i < input.size() - cantElementos + 1; i++) {
 			List<ElementoProcesable> elementos = new ArrayList<ElementoProcesable>();
 
 			for (int j = 0; j < cantElementos; j++)
@@ -30,4 +30,5 @@ public class SeleccionadorPares extends Seleccionador {
 
 		return seleccionados;
 	}
+
 }

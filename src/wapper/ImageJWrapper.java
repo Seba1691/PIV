@@ -11,6 +11,7 @@ public class ImageJWrapper {
 		ImagePlus imp2 = new ImagePlus("", imagen2.getImage());
 		ImageCalculator ic = new ImageCalculator();
 		ImagePlus imp3 = ic.run("Subtract create", imp1, imp2);
+		imp3.show();
 		return new Imagen(imp3.getBufferedImage());
 	}
 }

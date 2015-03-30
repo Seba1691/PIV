@@ -16,16 +16,15 @@ public abstract class Procesador {
 	}
 
 	public List<ElementoProcesable> procesar(List<ElementoProcesable> input) throws WrapperException {
-		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-		for (Filtro f : getFiltros()) {
-			int i = 0;
-			List<ElementoProcesable> elementosSeleccionados;
-			while ((elementosSeleccionados = seleccionador.seleccionar(input, i, f)) != null) {
-				elementosFiltrados.addAll(f.filtrar(elementosSeleccionados));
-				i++;
+		List<ElementoProcesable> result = input;
+		for (Filtro filtro : getFiltros()) {
+			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
+			for (List<ElementoProcesable> elementosSeleccionados : seleccionador.seleccionar(result, filtro)) {
+				elementosFiltrados.addAll(filtro.filtrar(elementosSeleccionados));
 			}
+			result = elementosFiltrados;
 		}
-		return elementosFiltrados;
+		return result;
 	}
 
 	public Seleccionador getSeleccionador() {

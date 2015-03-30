@@ -25,6 +25,7 @@ import pivLayer.PreProcesador;
 import pivLayer.Procesador;
 import pivLayer.ProcesadorPIV;
 import pivLayer.Seleccionador;
+import pivLayer.SeleccionadorCascada;
 import pivLayer.SeleccionadorPares;
 import wapper.WrapperException;
 
@@ -36,13 +37,16 @@ public class MainPruebaAdapter {
 
 		Imagen im1 = new Imagen(image1);
 		Imagen im2 = new Imagen(image2);
+		//Imagen im3 = new Imagen(image1);
+		Imagen im4 = new Imagen(image2);
 		List<ElementoProcesable> inputImage = new ArrayList<ElementoProcesable>();
 		inputImage.add(im1);
 		inputImage.add(im2);
+		inputImage.add(im4);
 
 		Seleccionador seleccionador = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
 		
-		Seleccionador seleccionadorPre = new SeleccionadorPares(Seleccionador.SELECCIONADOR_DOBLE);
+		Seleccionador seleccionadorPre = new SeleccionadorCascada(Seleccionador.SELECCIONADOR_DOBLE);
 
 		List<FiltroPreProcesamiento> listPre = new ArrayList<FiltroPreProcesamiento>();
 		listPre.add(new FiltroSubstract());

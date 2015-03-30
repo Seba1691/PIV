@@ -20,6 +20,9 @@ import pivLayer.MapaVectores;
 
 public class JPIVWrapper {
 
+	/**
+	 * Procesador PIV
+	 */
 	public static MapaVectores doPiv(Imagen image1, Imagen image2) throws WrapperException {
 		try {
 			String path = "C:/Users/Seba/Desktop/PIV/Salidas/";
@@ -32,12 +35,14 @@ public class JPIVWrapper {
 			JPiv jpiv = new JPiv();
 
 			jpiv.getSettings().jpivLibPath = System.getProperty("user.dir") + "/resources/jpivlib";
-			
+
 			PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
-			System.setOut(defaultPrintStream);			
+			System.setOut(defaultPrintStream);
 			System.setErr(defaultPrintStream);
 
-			String salida = path + "salida";
+			int rmd = (int) (Math.random() * 100);
+			System.out.println(rmd);
+			String salida = path + "salida" + rmd;
 			jpiv.getSettings().pivDefaultDestFileName = salida;
 			jpiv.getSettings().pivUseDefaultDestFileName = true;
 			jpiv.getListFrame().appendElement(input1);
@@ -52,9 +57,12 @@ public class JPIVWrapper {
 		}
 	}
 
-	public static MapaVectores normalizedMedianTestFilter(MapaVectores mapaVectores, double normMedianTestNoiseLevel, double normMedianTestThreshold) {
+	/**
+	 * Filtros PostProcesamiento
+	 */
+	public static MapaVectores normalizedMedianTestFilter(MapaVectores mapaVectores, double nivelRuido, double umbral) {
 		PivData pivData = new PivData(mapaVectores.getMapaVectores());
-		pivData.normalizedMedianTest(normMedianTestNoiseLevel, normMedianTestThreshold);
+		pivData.normalizedMedianTest(nivelRuido, umbral);
 		return new MapaVectores(pivData.getPivData());
 	}
 
@@ -64,10 +72,37 @@ public class JPIVWrapper {
 		return new MapaVectores(pivData.getPivData());
 	}
 
+	public static MapaVectores medianFilter(MapaVectores mapaVectores, boolean all) {
+		PivData pivData = new PivData(mapaVectores.getMapaVectores());
+		pivData.replaceByMedian(true, all);
+		return new MapaVectores(pivData.getPivData());
+	}
+
+	public static MapaVectores invalidateIsolatedVectors(MapaVectores mapaVectores, int vecindad) {
+		PivData pivData = new PivData(mapaVectores.getMapaVectores());
+		pivData.invalidateIsolatedVectors(vecindad);
+		return new MapaVectores(pivData.getPivData());
+	}
+
+	public static MapaVectores removeInvalidVectors(MapaVectores mapaVectores) {
+		PivData pivData = new PivData(mapaVectores.getMapaVectores());
+		pivData.removeInvalidVectors();
+		return new MapaVectores(pivData.getPivData());
+	}
+
+	public static MapaVectores smooth(MapaVectores mapaVectores, boolean all) {
+		PivData pivData = new PivData(mapaVectores.getMapaVectores());
+		pivData.smooth(all);
+		return new MapaVectores(pivData.getPivData());
+	}
+
 	private static double[][] fileToMatrix(String filePath) throws FileNotFoundException, IOException {
 		return FileHandling.readArrayFromFile(filePath);
 	}
 
+	/**
+	 * Traduccion de la informacion
+	 */
 	@SuppressWarnings("unused")
 	private static void matrixToFile(double[][] data, String pathname) throws IOException {
 		DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
