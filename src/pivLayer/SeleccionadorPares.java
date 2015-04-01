@@ -16,7 +16,7 @@ public class SeleccionadorPares extends Seleccionador {
 		List<List<ElementoProcesable>> seleccionados = new ArrayList<List<ElementoProcesable>>();
 		int cantElementos = filtro.getCantElementosProcesables();
 
-		for (int i = 0; i < input.size(); i += cantElementos) {
+		for (int i = 0; i < input.size(); i = i + cantElementos) {
 			List<ElementoProcesable> elementos = new ArrayList<ElementoProcesable>();
 
 			for (int j = 0; j < cantElementos; j++)

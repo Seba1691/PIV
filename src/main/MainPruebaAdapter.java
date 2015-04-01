@@ -13,10 +13,10 @@ import javax.imageio.ImageIO;
 import jpiv2.FileHandling;
 import pivLayer.ElementoProcesable;
 import pivLayer.FiltroCorrelacionCruzada;
+import pivLayer.FiltroFindMaxima;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.FiltroRemplazoVectoresInvalidosPorMediana;
-import pivLayer.FiltroSubstract;
 import pivLayer.FiltroTestMedianaNormalizada;
 import pivLayer.Imagen;
 import pivLayer.MapaVectores;
@@ -37,30 +37,34 @@ public class MainPruebaAdapter {
 
 		Imagen im1 = new Imagen(image1);
 		Imagen im2 = new Imagen(image2);
-		//Imagen im3 = new Imagen(image1);
+		// Imagen im3 = new Imagen(image1);
 		Imagen im4 = new Imagen(image2);
 		List<ElementoProcesable> inputImage = new ArrayList<ElementoProcesable>();
 		inputImage.add(im1);
 		inputImage.add(im2);
 		inputImage.add(im4);
 
-		Seleccionador seleccionador = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
-		
-		Seleccionador seleccionadorPre = new SeleccionadorCascada(Seleccionador.SELECCIONADOR_DOBLE);
+		Seleccionador seleccionadorCascada = new SeleccionadorCascada(Seleccionador.SELECCIONADOR_SIMPLE);
+
+		Seleccionador seleccionadorPares = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
 
 		List<FiltroPreProcesamiento> listPre = new ArrayList<FiltroPreProcesamiento>();
-		listPre.add(new FiltroSubstract());
-		Procesador preProcesador = new PreProcesador(listPre, seleccionadorPre);
+		// listPre.add(new FiltroSubstract());
+		// listPre.add(new FiltroAutoLocalTreshold("Bernsen", 15, 0, 0, true));
 
-		Procesador pivProcesador = new ProcesadorPIV(new FiltroCorrelacionCruzada(), seleccionador);
+		listPre.add(new FiltroFindMaxima(5, 1, false));
+
+		Procesador preProcesador = new PreProcesador(listPre, seleccionadorPares);
+
+		Procesador pivProcesador = new ProcesadorPIV(new FiltroCorrelacionCruzada(), seleccionadorCascada);
 
 		List<FiltroPostProcesamiento> listPost = new ArrayList<FiltroPostProcesamiento>();
 		listPost.add(new FiltroTestMedianaNormalizada(2.0, 0.1));
 		listPost.add(new FiltroRemplazoVectoresInvalidosPorMediana());
-		Procesador postProcesador = new PostProcesador(listPost, seleccionador);
+		Procesador postProcesador = new PostProcesador(listPost, seleccionadorPares);
 
 		List<ElementoProcesable> outputPre = preProcesador.procesar(inputImage);
-		
+
 		List<ElementoProcesable> outputPIV = pivProcesador.procesar(outputPre);
 
 		List<ElementoProcesable> outputPost = postProcesador.procesar(outputPIV);
