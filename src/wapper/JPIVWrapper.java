@@ -12,9 +12,11 @@ import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
+import jpiv2.DisplayVecFrame;
 import jpiv2.FileHandling;
 import jpiv2.JPiv;
 import jpiv2.PivData;
+import main.MainPruebaAdapter;
 import pivLayer.Imagen;
 import pivLayer.MapaVectores;
 
@@ -35,7 +37,6 @@ public class JPIVWrapper {
 			JPiv jpiv = new JPiv();
 
 			jpiv.getSettings().jpivLibPath = System.getProperty("user.dir") + "/resources/jpivlib";
-
 			PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
 			System.setOut(defaultPrintStream);
 			System.setErr(defaultPrintStream);
@@ -98,6 +99,11 @@ public class JPIVWrapper {
 
 	private static double[][] fileToMatrix(String filePath) throws FileNotFoundException, IOException {
 		return FileHandling.readArrayFromFile(filePath);
+	}
+
+	public static void visualizar(MapaVectores mapaVectores) throws IOException {
+		MainPruebaAdapter.matrixToFile(mapaVectores.getMapaVectores(), "C:/Users/Seba/Desktop/PIV/Salidas/salidaFiltrada");
+		new DisplayVecFrame(new JPiv(), "C:/Users/Seba/Desktop/PIV/Salidas/salidaFiltrada.jvc");
 	}
 
 	/**
