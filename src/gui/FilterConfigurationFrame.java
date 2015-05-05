@@ -46,7 +46,7 @@ public class FilterConfigurationFrame extends JDialog {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		tableModel = parametersToTableModel(filtro.getParametros());
 
-		table = new JTable();
+		table = new FilterConfiguratonTable();
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setModel(tableModel);
 		table.getColumnModel().getColumn(0).setPreferredWidth(575);
@@ -85,16 +85,16 @@ public class FilterConfigurationFrame extends JDialog {
 		}
 	}
 
-	private DefaultTableModel parametersToTableModel(HashMap<String, String> parameters) {
+	private DefaultTableModel parametersToTableModel(HashMap<String, Object> parameters) {
 		Object[][] data = new Object[parameters.size()][2];
 		int count = 0;
-		for (Entry<String, String> entry : parameters.entrySet()) {
+		for (Entry<String, Object> entry : parameters.entrySet()) {
 			data[count][0] = entry.getKey();
 			data[count][1] = entry.getValue();
 			count++;
 		}
 
-		return	new DefaultTableModel(data, new String[] { "Parametro", "Valor" }) {
+		return new DefaultTableModel(data, new String[] { "Parametro", "Valor" }) {
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, true };
 
@@ -104,11 +104,12 @@ public class FilterConfigurationFrame extends JDialog {
 		};
 	}
 
-	private HashMap<String, String> tableModelToParameters(DefaultTableModel tableModel) {
-		HashMap<String, String> result = new HashMap<String, String>();
+	private HashMap<String, Object> tableModelToParameters(DefaultTableModel tableModel) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
 		int nRow = tableModel.getRowCount();
-		for (int i = 0; i < nRow; i++)
-			result.put((String) tableModel.getValueAt(i, 0), (String) tableModel.getValueAt(i, 1));
+		for (int i = 0; i < nRow; i++) {
+			result.put((String) tableModel.getValueAt(i, 0), tableModel.getValueAt(i, 1));
+		}
 
 		return result;
 	}

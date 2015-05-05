@@ -18,13 +18,13 @@ public class FiltroSimple extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public HashMap<String, String> getParametros() {
+	public HashMap<String, Object> getParametros() {
 		return null;
 	}
 
 	@Override
-	public void setParametros(HashMap<String, String> parameters) {
-		//Nothing
+	public void setParametros(HashMap<String, Object> parameters) {
+		// Nothing
 	}
 
 }

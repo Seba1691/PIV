@@ -38,6 +38,10 @@ public class FiltersManager {
 		return instance;
 	}
 
+	public static void reloadInstance() throws ManagerException {
+		instance = new FiltersManager();
+	}
+
 	public HashMap<String, String> getFiltrosPreProcesamiento() {
 		return filtrosPreProcesamiento;
 	}
@@ -97,28 +101,28 @@ public class FiltersManager {
 	}
 
 	private void loadFilters() throws ManagerException {
-		File dir = new File(Constants.filtersPath);
-		List<URL> filtersURL = new ArrayList<>();
-		for (File file : dir.listFiles()) {
-			try {
+		try {
+			File dir = new File(Settings.filtersPath);
+			List<URL> filtersURL = new ArrayList<>();
+			for (File file : dir.listFiles()) {
+
 				InputStream config = getInputStream(file, Constants.fileConfig);
 
 				if (config == null)
 					continue;
 
-				filtersURL.add(new URL("file:///" + Constants.filtersPath + "/" + file.getName()));
+				filtersURL.add(new URL("file:///" + Settings.filtersPath + "/" + file.getName()));
 				BufferedReader br = new BufferedReader(new InputStreamReader(config, "UTF-8"));
 				String linea;
 				while ((linea = br.readLine()) != null) {
 					String[] filterData = linea.split(":");
 					putFilter(filterData[0], filterData[1], filterData[2]);
 				}
-			} catch (IOException e) {
-				throw new ManagerException(e);
 			}
+			setFiltersClassLoader(new URLClassLoader(filtersURL.toArray(new URL[filtersURL.size()])));
+		} catch (Exception e) {
+			// throw new ManagerException(e);
 		}
-
-		setFiltersClassLoader(new URLClassLoader(filtersURL.toArray(new URL[filtersURL.size()])));
 	}
 
 	private InputStream getInputStream(File zip, String entry) throws IOException {

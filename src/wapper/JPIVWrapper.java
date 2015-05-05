@@ -24,8 +24,31 @@ public class JPIVWrapper {
 
 	/**
 	 * Procesador PIV
+	 * 
+	 * @param onlySumOfCorrelation
+	 * @param exportCorrelationPass
+	 * @param exportCorrelationVector
+	 * @param exportCorrelationFunctions
+	 * @param deformInterrogationWindows
+	 * @param smoothing
+	 * @param medianFilter
+	 * @param replaceInvalidVectorByMedian
+	 * @param normalizedMedianTest
+	 * @param verticalPreShift
+	 * @param horizontalPreShift
+	 * @param roiMatrix
+	 * @param roi
+	 * @param verticalVertorSpacing
+	 * @param horizontalVertorSpacing
+	 * @param searchDomainHeigth
+	 * @param searchDomainWidth
+	 * @param interWindowsHeight
+	 * @param interWindowsWidth
+	 * @param multiPass
 	 */
-	public static MapaVectores doPiv(Imagen image1, Imagen image2) throws WrapperException {
+	public static MapaVectores doPiv(Imagen image1, Imagen image2, int multiPass, Integer[] interWindowsWidth, Integer[] interWindowsHeight, Integer[] searchDomainWidth, Integer[] searchDomainHeigth, Integer[] horizontalVertorSpacing, Integer[] verticalVertorSpacing, //
+			boolean roi, Integer[][] roiMatrix, int horizontalPreShift, int verticalPreShift, boolean normalizedMedianTest, boolean replaceInvalidVectorByMedian, boolean medianFilter, boolean smoothing, //
+			boolean deformInterrogationWindows, boolean exportCorrelationFunctions, int exportCorrelationVector, int exportCorrelationPass, boolean onlySumOfCorrelation) throws WrapperException {
 		try {
 			String path = "C:/Users/Seba/Desktop/PIV/Salidas/";
 			String input1 = path + "imageSaved1.png";
@@ -35,6 +58,32 @@ public class JPIVWrapper {
 			ImageIO.write(image2.getImage(), "png", new File(input2));
 
 			JPiv jpiv = new JPiv();
+
+			// Setting
+			jpiv2.Settings settings = jpiv.getSettings();
+			settings.pivMultiPass = multiPass;
+			settings.pivWindow = new int[][] { integerToIntArray(interWindowsWidth), integerToIntArray(interWindowsHeight), integerToIntArray(searchDomainWidth), integerToIntArray(searchDomainHeigth), integerToIntArray(horizontalVertorSpacing), integerToIntArray(verticalVertorSpacing) };
+
+			settings.pivROI = roi;
+			settings.pivROIP1x = roiMatrix[0][0];
+			settings.pivROIP2x = roiMatrix[0][1];
+			settings.pivROIP1y = roiMatrix[1][0];
+			settings.pivROIP2x = roiMatrix[0][1];
+
+			settings.pivHorPreShift = horizontalPreShift;
+			settings.pivVerPreShift = verticalPreShift;
+
+			settings.pivNormMedianTest = normalizedMedianTest;
+			settings.pivReplace = replaceInvalidVectorByMedian;
+			settings.pivMedian = medianFilter;
+			settings.pivSmoothing = smoothing;
+
+			settings.pivShearIntWindows = deformInterrogationWindows;
+
+			settings.exportCorrFunction = exportCorrelationFunctions;
+			settings.exportCorrFunctionPass = exportCorrelationPass;
+			settings.exportCorrFunctionNum = exportCorrelationVector;
+			settings.exportCorrFunctionOnlySumOfCorr = onlySumOfCorrelation;
 
 			jpiv.getSettings().jpivLibPath = System.getProperty("user.dir") + "/resources/jpivlib";
 			PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
@@ -104,6 +153,13 @@ public class JPIVWrapper {
 	public static void visualizar(MapaVectores mapaVectores) throws IOException {
 		MainPruebaAdapter.matrixToFile(mapaVectores.getMapaVectores(), "C:/Users/Seba/Desktop/PIV/Salidas/salidaFiltrada");
 		new DisplayVecFrame(new JPiv(), "C:/Users/Seba/Desktop/PIV/Salidas/salidaFiltrada.jvc");
+	}
+
+	private static int[] integerToIntArray(Integer[] array) {
+		int[] result = new int[array.length];
+		for (int i = 0; i < array.length; i++)
+			result[i] = array[i];
+		return result;
 	}
 
 	/**

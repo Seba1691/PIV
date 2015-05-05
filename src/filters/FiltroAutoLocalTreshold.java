@@ -7,7 +7,6 @@ import java.util.List;
 import pivLayer.ElementoProcesable;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
-
 import wapper.ImageJWrapper;
 import wapper.WrapperException;
 
@@ -26,6 +25,7 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 	private double parametro1;
 	private double parametro2;
 	private boolean fondoBlanco;
+	private String[] tabla;
 
 	public FiltroAutoLocalTreshold(String metodo, int radio, double parametro1, double parametro2, boolean fondoBlanco) {
 		this.cantElementosProcesables = 1;
@@ -34,8 +34,9 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 		this.parametro1 = parametro1;
 		this.parametro2 = parametro2;
 		this.fondoBlanco = fondoBlanco;
+		this.tabla = new String[] { "uno", "dos" };
 	}
-	
+
 	public FiltroAutoLocalTreshold() {
 		this("Bernsen", 15, 0, 0, true);
 	}
@@ -48,36 +49,39 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public HashMap<String, String> getParametros() {
-		HashMap<String, String> parameters = new HashMap<String, String>();
+	public HashMap<String, Object> getParametros() {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put(METODO, metodo);
-		parameters.put(RADIO, String.valueOf(radio));
-		parameters.put(PARAMETRO1, String.valueOf(parametro1));
-		parameters.put(PARAMETRO2, String.valueOf(parametro2));
-		parameters.put(FONDO_BLANCO, String.valueOf(fondoBlanco));
+		parameters.put(RADIO, radio);
+		parameters.put(PARAMETRO1, parametro1);
+		parameters.put(PARAMETRO2, parametro2);
+		parameters.put(FONDO_BLANCO, fondoBlanco);
+		parameters.put("tabla", tabla);
 		return parameters;
 	}
 
 	@Override
-	public void setParametros(HashMap<String, String> parameters) {
+	public void setParametros(HashMap<String, Object> parameters) {
 		for (String key : parameters.keySet())
 			switch (key) {
 			case METODO:
-				this.metodo = parameters.get(key);
+				this.metodo = (String) parameters.get(key);
 				break;
 			case RADIO:
-				this.radio = Integer.valueOf(parameters.get(key));
+				this.radio = (Integer) parameters.get(key);
 				break;
 			case PARAMETRO1:
-				this.parametro1 = Double.valueOf(parameters.get(key));
+				this.parametro1 = (Double) parameters.get(key);
 				break;
 			case PARAMETRO2:
-				this.parametro2 = Double.valueOf(parameters.get(key));
+				this.parametro2 = (Double) parameters.get(key);
 				break;
 			case FONDO_BLANCO:
-				this.fondoBlanco = Boolean.valueOf(parameters.get(key));
+				this.fondoBlanco = (Boolean) parameters.get(key);
+				break;
+			case "tabla":
+				this.tabla = (String[]) parameters.get(key);
 				break;
 			}
 	}
-
 }

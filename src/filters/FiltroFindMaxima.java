@@ -42,26 +42,26 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public HashMap<String, String> getParametros() {
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put(NOISE_TOLERANCE, String.valueOf(noiseTolerance));
-		parameters.put(OUTPUT_TYPE, String.valueOf(outputType));
-		parameters.put(EXCLUDE_EDGES, String.valueOf(excludeEdges));
+	public HashMap<String, Object> getParametros() {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(NOISE_TOLERANCE, noiseTolerance);
+		parameters.put(OUTPUT_TYPE, outputType);
+		parameters.put(EXCLUDE_EDGES, excludeEdges);
 		return parameters;
 	}
 
 	@Override
-	public void setParametros(HashMap<String, String> parameters) {
+	public void setParametros(HashMap<String, Object> parameters) {
 		for (String key : parameters.keySet())
 			switch (key) {
 			case NOISE_TOLERANCE:
-				this.noiseTolerance = Integer.valueOf(parameters.get(key));
+				this.noiseTolerance = (Integer) parameters.get(key);
 				break;
 			case OUTPUT_TYPE:
-				this.outputType = Integer.valueOf(parameters.get(key));
+				this.outputType = (Integer) parameters.get(key);
 				break;
 			case EXCLUDE_EDGES:
-				this.excludeEdges = Boolean.valueOf(parameters.get(key));
+				this.excludeEdges = (Boolean) parameters.get(key);
 				break;
 			}
 	}

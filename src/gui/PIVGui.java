@@ -62,7 +62,7 @@ import filters.FiltroAutoLocalTreshold;
 
 public class PIVGui {
 
-	private JFrame PIV;
+	private static JFrame PIV;
 
 	private DefaultListModel<File> selectedFilesModel;
 	private JList<File> listFiles;
@@ -89,8 +89,7 @@ public class PIVGui {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					PIVGui window = new PIVGui();
-					window.PIV.setVisible(true);
+					new PIVGui();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -107,6 +106,7 @@ public class PIVGui {
 		initVariables();
 		initialize();
 		loadFilters();
+		PIV.setVisible(true);
 	}
 
 	private void initVariables() {
@@ -188,6 +188,18 @@ public class PIVGui {
 			}
 		});
 		menuPIV.add(itemDoPIV);
+
+		JMenu menuPreferences = new JMenu("Preferencias");
+		menuBar.add(menuPreferences);
+
+		JMenuItem itemConfig = new JMenuItem("Configuracion");
+		itemConfig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SettingsFrame sf = new SettingsFrame();
+				sf.setVisible(true);
+			}
+		});
+		menuPreferences.add(itemConfig);
 
 		// -- Archivos --//
 		selectedFilesModel = new DefaultListModel<File>();
@@ -362,13 +374,8 @@ public class PIVGui {
 		JButton btnSettingPiv = new JButton("Setting PIV");
 		btnSettingPiv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				/*
-				 * SettingsFrame settingsFrame = new SettingsFrame(new JPiv());
-				 * settingsFrame.show();
-				 */
 				PIVConfigurationFrame frame = new PIVConfigurationFrame(new FiltroAutoLocalTreshold());
 				frame.setVisible(true);
-				// frame.setLocationRelativeTo(getParent());
 			}
 		});
 		panelBoludeces.add(btnSettingPiv);
@@ -449,6 +456,16 @@ public class PIVGui {
 			postProcessingFiltersModel.addElement(new ComboItemFilter(key, postProcessingFilters.get(key)));
 	}
 
+	public static void restatApplication() {
+		try {
+			FiltersManager.reloadInstance();
+			PIV.dispose();
+			new PIVGui();
+		} catch (ManagerException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void doPIV() {
 		// DEFINIR DESPUES POR CONFIGURACION
 		Seleccionador seleccionadorCascada = new SeleccionadorCascada(Seleccionador.SELECCIONADOR_SIMPLE);
@@ -472,13 +489,13 @@ public class PIVGui {
 			Procesador postProcesador = new PostProcesador(getPostProcessingFilterList(), seleccionadorPares);
 
 			List<ElementoProcesable> outputPre = preProcesador.procesar(inputImage);
-			
+
 			List<ElementoProcesable> outputPIV = pivProcesador.procesar(outputPre);
 
 			List<ElementoProcesable> outputPost = postProcesador.procesar(outputPIV);
-			
-			JPIVWrapper.visualizar((MapaVectores)outputPost.get(0));
-			
+
+			JPIVWrapper.visualizar((MapaVectores) outputPost.get(0));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

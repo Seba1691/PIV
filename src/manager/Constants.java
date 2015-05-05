@@ -9,6 +9,5 @@ public interface Constants {
 
 	// Files
 	public static final String fileConfig = "filters.config";
-	public static final String filtersPath = System.getProperty("user.dir") + "/filtros";
 
 }

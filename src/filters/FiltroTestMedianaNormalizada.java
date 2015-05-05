@@ -7,7 +7,6 @@ import java.util.List;
 import pivLayer.ElementoProcesable;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.MapaVectores;
-
 import wapper.JPIVWrapper;
 
 public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
@@ -23,7 +22,7 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 		this.umbral = umbral;
 		this.nivelRuido = nivelRuido;
 	}
-	
+
 	public FiltroTestMedianaNormalizada() {
 		this(2.0, 0.1);
 	}
@@ -52,23 +51,23 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 	}
 
 	@Override
-	public HashMap<String, String> getParametros() {
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put(UMBRAL, String.valueOf(umbral));
-		parameters.put(NIVEL_RUIDO, String.valueOf(nivelRuido));
+	public HashMap<String, Object> getParametros() {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(UMBRAL, umbral);
+		parameters.put(NIVEL_RUIDO, nivelRuido);
 		return parameters;
 	}
 
 	@Override
-	public void setParametros(HashMap<String, String> parameters) {
+	public void setParametros(HashMap<String, Object> parameters) {
 
 		for (String key : parameters.keySet())
 			switch (key) {
 			case UMBRAL:
-				this.umbral = Integer.valueOf(parameters.get(key));
+				this.umbral = (Integer) parameters.get(key);
 				break;
 			case NIVEL_RUIDO:
-				this.nivelRuido = Integer.valueOf(parameters.get(key));
+				this.nivelRuido = (Integer) parameters.get(key);
 				break;
 			}
 	}
