@@ -24,11 +24,29 @@ public abstract class Filtro {
 	}
 
 	@Override
-	public boolean equals(Object f) {
-		Filtro filter = (Filtro) f;
-		return getParametros().equals(filter.getParametros()) && //
-				filter.getCantElementosProcesables() == getCantElementosProcesables() && //
-				filter.getClass().getName().equals(this.getClass().getName());
+	public int hashCode() {
+		final int prime = 31;
+		HashMap<String, Object> parameters = getParametros();
+		int result = 1;
+		result = prime * result + cantElementosProcesables;
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Filtro other = (Filtro) obj;
+		if (cantElementosProcesables != other.cantElementosProcesables)
+			return false;
+		if (getCantElementosProcesables() != other.getCantElementosProcesables())
+			return false;
+		return true;
 	}
 
 }

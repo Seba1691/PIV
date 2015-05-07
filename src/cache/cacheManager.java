@@ -1,37 +1,48 @@
 package cache;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
 import pivLayer.Filtro;
-import pivLayer.Imagen;
 
-public class cacheManager {
-	private List<ElementoProcesable> intermedialResults;
-	private List<Filtro> filtersGroup;
-	
-	public cacheManager(List<ElementoProcesable> intermedialResults, List<Filtro> filtersGroup) {
-		this.intermedialResults = intermedialResults;
-		this.filtersGroup = filtersGroup;
+public class CacheManager {
+
+	private static final int CACHE_SIZE = 300;
+
+	private static CacheManager instance = null;
+
+	private HashMap<CacheEntry, List<ElementoProcesable>> cache;
+	private List<CacheEntry> recentUsed;
+
+	protected CacheManager() {
+		cache = new HashMap<CacheEntry, List<ElementoProcesable>>();
+		recentUsed = new ArrayList<CacheEntry>();
 	}
 
-	public ElementoProcesable getIntermedialResult(List<Imagen> imagesIn, List<Filtro> filters) {
-		return null;
+	public static CacheManager getInstance() {
+		if (instance == null) {
+			instance = new CacheManager();
+		}
+		return instance;
 	}
 
-	public List<ElementoProcesable> getIntermedialResults() {
-		return intermedialResults;
+	public List<ElementoProcesable> get(List<ElementoProcesable> elementosProcesables, Filtro filter) {
+		CacheEntry entry = new CacheEntry(elementosProcesables, filter);
+		if (recentUsed.remove(entry))
+			recentUsed.add(entry);
+		return cache.get(entry);
 	}
 
-	public void setIntermedialResults(List<ElementoProcesable> intermedialResults) {
-		this.intermedialResults = intermedialResults;
-	}
-
-	public List<Filtro> getFiltersGroup() {
-		return filtersGroup;
-	}
-
-	public void setFiltersGroup(List<Filtro> filtersGroup) {
-		this.filtersGroup = filtersGroup;
+	public void add(List<ElementoProcesable> elementosProcesables, Filtro filter, List<ElementoProcesable> value) {
+		if (recentUsed.size() == CACHE_SIZE) {
+			CacheEntry removeEntry = recentUsed.get(0);
+			recentUsed.remove(0);
+			cache.remove(removeEntry);
+		}
+		CacheEntry newEntry = new CacheEntry(elementosProcesables, filter);
+		cache.put(newEntry, value);
+		recentUsed.add(newEntry);
 	}
 }

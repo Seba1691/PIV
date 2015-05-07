@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URLClassLoader;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import pivLayer.Seleccionador;
 import pivLayer.SeleccionadorCascada;
 import pivLayer.SeleccionadorPares;
 import wapper.JPIVWrapper;
+import cache.CacheManager;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -81,6 +83,7 @@ public class PIVGui {
 	private List<FiltroPreProcesamiento> preProcessingFilterList;
 	private List<FiltroPIV> pivProcessingFilterList;
 	private List<FiltroPostProcesamiento> postProcessingFilterList;
+	private List<Imagen> imagesList;
 
 	/**
 	 * Launch the application.
@@ -120,6 +123,11 @@ public class PIVGui {
 
 	public void addSelectedFile(File f) {
 		this.selectedFilesModel.addElement(f);
+		try {
+			imagesList.add(new Imagen(ImageIO.read(f)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -203,6 +211,7 @@ public class PIVGui {
 
 		// -- Archivos --//
 		selectedFilesModel = new DefaultListModel<File>();
+		imagesList = new ArrayList<Imagen>();
 		JTabbedPane tabbedPaneFiles = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPaneFiles.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		splitPane.setLeftComponent(tabbedPaneFiles);
@@ -241,7 +250,7 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPreProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPreProcesamiento filtroPreProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = FiltersManager.getIntance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroPreProcesamiento = ((FiltroPreProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroPreProcesamiento> newRowPanel = new FilterRowPanel<FiltroPreProcesamiento>(filtroPreProcesamiento, filterName, preProcessingFilterList);
 					newRowPanel.insertRowIn(gridPreProcessingPanel);
@@ -302,7 +311,7 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPIV filtroPIVProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = FiltersManager.getIntance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroPIVProcesamiento = ((FiltroPIV) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroPIV> newRowPanel = new FilterRowPanel<FiltroPIV>(filtroPIVProcesamiento, filterName, pivProcessingFilterList);
 					newRowPanel.insertRowIn(gridPIVProcessingPanel);
@@ -346,7 +355,7 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPostProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPostProcesamiento filtroPostProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = FiltersManager.getIntance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroPostProcesamiento = ((FiltroPostProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroPostProcesamiento> newRowPanel = new FilterRowPanel<FiltroPostProcesamiento>(filtroPostProcesamiento, filterName, postProcessingFilterList);
 					newRowPanel.insertRowIn(gridPostProcessingPanel);
@@ -371,15 +380,6 @@ public class PIVGui {
 		panelBoludeces.setToolTipText("Boludeces");
 		tabbedPaneProcessing.addTab("Boludeces", null, panelBoludeces, null);
 
-		JButton btnSettingPiv = new JButton("Setting PIV");
-		btnSettingPiv.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				PIVConfigurationFrame frame = new PIVConfigurationFrame(new FiltroAutoLocalTreshold());
-				frame.setVisible(true);
-			}
-		});
-		panelBoludeces.add(btnSettingPiv);
-
 		JButton btnNewButton = new JButton("New button");
 		panelBoludeces.add(btnNewButton);
 
@@ -401,28 +401,9 @@ public class PIVGui {
 		});
 		panelBoludeces.add(btnMostrarlistas);
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {			
+				System.out.println(imagesList.size());
 
-				// FiltroPreProcesamiento p = ((FiltroPreProcesamiento)
-				// Class.forName("pivLayer.FiltroFindMaxima").newInstance());
-				// System.out.println(p.getCantElementosProcesables());
-				// try {
-				// System.out.println((Class.forName("pivLayer.FiltroFindMaxima").getField("name").get(null)));
-				// } catch (NoSuchFieldException | SecurityException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				// } catch (InstantiationException | IllegalAccessException |
-				// ClassNotFoundException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				System.out.println(System.getProperty("user.dir"));
-				int[] elem = listFiles.getSelectedIndices();
-				for (int i : elem) {
-					File f = selectedFilesModel.get(i);
-					System.out.println(f.getName());
-				}
 			}
 		});
 
@@ -441,7 +422,7 @@ public class PIVGui {
 	}
 
 	private void loadFilters() throws ManagerException {
-		FiltersManager fm = FiltersManager.getIntance();
+		FiltersManager fm = FiltersManager.getInstance();
 		HashMap<String, String> preProcessingFilters = fm.getFiltrosPreProcesamiento();
 		HashMap<String, String> pivProcessingFilters = fm.getFiltrosPIVProcesamiento();
 		HashMap<String, String> postProcessingFilters = fm.getFiltrosPostProcesamiento();
@@ -477,8 +458,7 @@ public class PIVGui {
 
 			int[] elem = listFiles.getSelectedIndices();
 			for (int i : elem) {
-				File f = selectedFilesModel.get(i);
-				Imagen im = new Imagen(ImageIO.read(f));
+				Imagen im = imagesList.get(i);
 				inputImage.add(im);
 			}
 
@@ -493,6 +473,14 @@ public class PIVGui {
 			List<ElementoProcesable> outputPIV = pivProcesador.procesar(outputPre);
 
 			List<ElementoProcesable> outputPost = postProcesador.procesar(outputPIV);
+
+			// DecimalFormat df = (DecimalFormat)
+			// DecimalFormat.getInstance(Locale.US);
+			// df.applyPattern("+0.0000E00;-0.0000E00");
+			// FileHandling.writeArrayToFile(((MapaVectores)
+			// outputPost.get(0)).getMapaVectores(),
+			// "C:/Users/Seba/Desktop/PIV/Salidas/pruebita.jvc", df);
+			// JPIVWrapper.visualizar(new MapaVectores(FileHandling.readArrayFromFile("C:/Users/Seba/Desktop/PIV/Salidas/pruebita.jvc")));
 
 			JPIVWrapper.visualizar((MapaVectores) outputPost.get(0));
 

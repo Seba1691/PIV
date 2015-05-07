@@ -31,7 +31,7 @@ public class FiltersManager {
 		loadFilters();
 	}
 
-	public static FiltersManager getIntance() throws ManagerException {
+	public static FiltersManager getInstance() throws ManagerException {
 		if (instance == null) {
 			instance = new FiltersManager();
 		}
