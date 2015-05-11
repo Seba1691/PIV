@@ -11,7 +11,7 @@ public abstract class Procesador {
 
 	private Seleccionador seleccionador;
 
-	protected List<Filtro> filtros;
+	protected List<FiltroProcesable> filtros;
 
 	public Procesador(Seleccionador seleccionador) {
 		this.seleccionador = seleccionador;
@@ -19,7 +19,7 @@ public abstract class Procesador {
 
 	public List<ElementoProcesable> procesar(List<ElementoProcesable> input) throws WrapperException {
 		List<ElementoProcesable> result = input;
-		for (Filtro filtro : getFiltros()) {
+		for (FiltroProcesable filtro : getFiltros()) {
 			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 			for (List<ElementoProcesable> elementosSeleccionados : seleccionador.seleccionar(result, filtro)) {
 				List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
@@ -43,7 +43,7 @@ public abstract class Procesador {
 		this.seleccionador = seleccionador;
 	}
 
-	private List<Filtro> getFiltros() {
+	private List<FiltroProcesable> getFiltros() {
 		return filtros;
 	}
 

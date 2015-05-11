@@ -43,8 +43,8 @@ import pivLayer.Filtro;
 import pivLayer.FiltroPIV;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.FiltroPreProcesamiento;
+import pivLayer.FiltroVisualizacion;
 import pivLayer.Imagen;
-import pivLayer.MapaVectores;
 import pivLayer.PostProcesador;
 import pivLayer.PreProcesador;
 import pivLayer.Procesador;
@@ -52,15 +52,12 @@ import pivLayer.ProcesadorPIV;
 import pivLayer.Seleccionador;
 import pivLayer.SeleccionadorCascada;
 import pivLayer.SeleccionadorPares;
-import wapper.JPIVWrapper;
-import cache.CacheManager;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
-import filters.FiltroAutoLocalTreshold;
 
 public class PIVGui {
 
@@ -72,17 +69,21 @@ public class PIVGui {
 	private DefaultComboBoxModel<ComboItemFilter> preProcessingFiltersModel;
 	private DefaultComboBoxModel<ComboItemFilter> postProcessingFiltersModel;
 	private DefaultComboBoxModel<ComboItemFilter> pivProcessingFiltersModel;
+	private DefaultComboBoxModel<ComboItemFilter> visualizationFiltersModel;
 
 	private JPanel gridPreProcessingPanel;
-	private JComboBox<ComboItemFilter> comboBoxPreProcessing;
 	private JPanel gridPIVProcessingPanel;
-	private JComboBox<ComboItemFilter> comboBoxPIVProcessing;
 	private JPanel gridPostProcessingPanel;
+	private JPanel gridVisualizationPanel;
+	private JComboBox<ComboItemFilter> comboBoxPreProcessing;
+	private JComboBox<ComboItemFilter> comboBoxPIVProcessing;
 	private JComboBox<ComboItemFilter> comboBoxPostProcessing;
+	private JComboBox<ComboItemFilter> comboBoxVisualization;
 
 	private List<FiltroPreProcesamiento> preProcessingFilterList;
 	private List<FiltroPIV> pivProcessingFilterList;
 	private List<FiltroPostProcesamiento> postProcessingFilterList;
+	private List<FiltroVisualizacion> visualizationFilterList;
 	private List<Imagen> imagesList;
 
 	/**
@@ -116,9 +117,7 @@ public class PIVGui {
 		preProcessingFilterList = new ArrayList<>();
 		pivProcessingFilterList = new ArrayList<>();
 		postProcessingFilterList = new ArrayList<>();
-
-		new PostProcesador((ArrayList<FiltroPostProcesamiento>) postProcessingFilterList, new SeleccionadorCascada(Seleccionador.SELECCIONADOR_DOBLE));
-
+		visualizationFilterList = new ArrayList<>();
 	}
 
 	public void addSelectedFile(File f) {
@@ -376,6 +375,50 @@ public class PIVGui {
 		FormLayout fl_gridPostProcessingPanel = new FormLayout(new ColumnSpec[] { ColumnSpec.decode("0px:grow"), }, new RowSpec[] {});
 		gridPostProcessingPanel.setLayout(fl_gridPostProcessingPanel);
 
+		// ----- VISUALIZACION PANEL
+		JPanel panelVisualization = new JPanel();
+		tabbedPaneProcessing.addTab("Visualizacion", null, panelVisualization, null);
+		visualizationFiltersModel = new DefaultComboBoxModel<ComboItemFilter>();
+		panelVisualization.setLayout(new BorderLayout(0, 0));
+
+		JPanel panelAddVisualizationFilters = new JPanel();
+		FlowLayout fl_panelAddVisualizationFilters = (FlowLayout) panelAddVisualizationFilters.getLayout();
+		fl_panelAddVisualizationFilters.setAlignOnBaseline(true);
+		fl_panelAddVisualizationFilters.setAlignment(FlowLayout.LEFT);
+		panelVisualization.add(panelAddVisualizationFilters, BorderLayout.NORTH);
+
+		comboBoxVisualization = new JComboBox<ComboItemFilter>();
+		panelAddVisualizationFilters.add(comboBoxVisualization);
+		comboBoxVisualization.setModel(visualizationFiltersModel);
+
+		JButton btnAddVisualizationFilter = new JButton("Agregar");
+		btnAddVisualizationFilter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String filterName = ((ComboItemFilter) comboBoxVisualization.getSelectedItem()).getFilterName();
+				String filterClass = ((ComboItemFilter) comboBoxVisualization.getSelectedItem()).getFilterClassName();
+				FiltroVisualizacion filtroVisualizacion;
+				try {
+					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
+					filtroVisualizacion = ((FiltroVisualizacion) Class.forName(filterClass, true, filtersClassLoader).newInstance());
+					FilterRowPanel<FiltroVisualizacion> newRowPanel = new FilterRowPanel<FiltroVisualizacion>(filtroVisualizacion, filterName, visualizationFilterList);
+					newRowPanel.insertRowIn(gridVisualizationPanel);
+					visualizationFilterList.add(filtroVisualizacion);
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ManagerException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		panelAddVisualizationFilters.add(btnAddVisualizationFilter);
+
+		JScrollPane scrollPaneSelectedVisualizationFilters = new JScrollPane();
+		scrollPaneSelectedVisualizationFilters.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		panelVisualization.add(scrollPaneSelectedVisualizationFilters, BorderLayout.CENTER);
+
+		gridVisualizationPanel = new JPanel();
+		scrollPaneSelectedVisualizationFilters.setViewportView(gridVisualizationPanel);
+		FormLayout fl_gridVisualizationPanel = new FormLayout(new ColumnSpec[] { ColumnSpec.decode("0px:grow"), }, new RowSpec[] {});
+		gridVisualizationPanel.setLayout(fl_gridVisualizationPanel);
+
 		JPanel panelBoludeces = new JPanel();
 		panelBoludeces.setToolTipText("Boludeces");
 		tabbedPaneProcessing.addTab("Boludeces", null, panelBoludeces, null);
@@ -401,7 +444,7 @@ public class PIVGui {
 		});
 		panelBoludeces.add(btnMostrarlistas);
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {			
+			public void actionPerformed(ActionEvent arg0) {
 				System.out.println(imagesList.size());
 
 			}
@@ -426,6 +469,7 @@ public class PIVGui {
 		HashMap<String, String> preProcessingFilters = fm.getFiltrosPreProcesamiento();
 		HashMap<String, String> pivProcessingFilters = fm.getFiltrosPIVProcesamiento();
 		HashMap<String, String> postProcessingFilters = fm.getFiltrosPostProcesamiento();
+		HashMap<String, String> visualizationFilters = fm.getFiltrosVisualizacion();
 
 		for (String key : preProcessingFilters.keySet())
 			preProcessingFiltersModel.addElement(new ComboItemFilter(key, preProcessingFilters.get(key)));
@@ -435,6 +479,9 @@ public class PIVGui {
 
 		for (String key : postProcessingFilters.keySet())
 			postProcessingFiltersModel.addElement(new ComboItemFilter(key, postProcessingFilters.get(key)));
+
+		for (String key : visualizationFilters.keySet())
+			visualizationFiltersModel.addElement(new ComboItemFilter(key, visualizationFilters.get(key)));
 	}
 
 	public static void restatApplication() {
@@ -480,9 +527,12 @@ public class PIVGui {
 			// FileHandling.writeArrayToFile(((MapaVectores)
 			// outputPost.get(0)).getMapaVectores(),
 			// "C:/Users/Seba/Desktop/PIV/Salidas/pruebita.jvc", df);
-			// JPIVWrapper.visualizar(new MapaVectores(FileHandling.readArrayFromFile("C:/Users/Seba/Desktop/PIV/Salidas/pruebita.jvc")));
+			// JPIVWrapper.visualizar(new
+			// MapaVectores(FileHandling.readArrayFromFile("C:/Users/Seba/Desktop/PIV/Salidas/pruebita.jvc")));
 
-			JPIVWrapper.visualizar((MapaVectores) outputPost.get(0));
+			visualizationFilterList.get(0).visualizar(outputPost);
+
+			// JPIVWrapper.visualizar((MapaVectores) outputPost.get(0));
 
 		} catch (Exception e) {
 			e.printStackTrace();

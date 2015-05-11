@@ -21,6 +21,7 @@ public class FiltersManager {
 	private HashMap<String, String> filtrosPreProcesamiento;
 	private HashMap<String, String> filtrosPIVProcesamiento;
 	private HashMap<String, String> filtrosPostProcesamiento;
+	private HashMap<String, String> filtrosVisualizacion;
 
 	private URLClassLoader filtersClassLoader;
 
@@ -28,6 +29,7 @@ public class FiltersManager {
 		filtrosPreProcesamiento = new HashMap<>();
 		filtrosPIVProcesamiento = new HashMap<>();
 		filtrosPostProcesamiento = new HashMap<>();
+		filtrosVisualizacion = new HashMap<>();
 		loadFilters();
 	}
 
@@ -66,6 +68,14 @@ public class FiltersManager {
 		this.filtrosPostProcesamiento = filtrosPostProcesamiento;
 	}
 
+	public HashMap<String, String> getFiltrosVisualizacion() {
+		return filtrosVisualizacion;
+	}
+
+	public void setFiltrosVisualizacion(HashMap<String, String> filtrosVisualizacion) {
+		this.filtrosVisualizacion = filtrosVisualizacion;
+	}
+
 	public URLClassLoader getFiltersClassLoader() {
 		return filtersClassLoader;
 	}
@@ -86,6 +96,10 @@ public class FiltersManager {
 		filtrosPostProcesamiento.put(filterClass, filterName);
 	}
 
+	public void putVisualizationFilter(String filterClass, String filterName) {
+		filtrosVisualizacion.put(filterClass, filterName);
+	}
+
 	public void putFilter(String filterClass, String type, String filterName) {
 		switch (type) {
 		case Constants.filtroPreProcesamiento:
@@ -96,6 +110,9 @@ public class FiltersManager {
 			break;
 		case Constants.filtroPostProcesamiento:
 			filtrosPostProcesamiento.put(filterClass, filterName);
+			break;
+		case Constants.filtroVisualizacion:
+			filtrosVisualizacion.put(filterClass, filterName);
 			break;
 		}
 	}

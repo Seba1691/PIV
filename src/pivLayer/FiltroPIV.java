@@ -1,5 +1,5 @@
 package pivLayer;
 
-public abstract class FiltroPIV extends Filtro {
+public abstract class FiltroPIV extends FiltroProcesable {
 
 }

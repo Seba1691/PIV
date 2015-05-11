@@ -1,15 +1,10 @@
 package pivLayer;
 
 import java.util.HashMap;
-import java.util.List;
-
-import wapper.WrapperException;
 
 public abstract class Filtro {
 
 	protected int cantElementosProcesables;
-
-	public abstract List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws WrapperException;
 
 	public abstract HashMap<String, Object> getParametros();
 
