@@ -10,7 +10,6 @@ import pivLayer.Filtro;
 public class CacheManager {
 
 	private static final int CACHE_SIZE = 300;
-
 	private static CacheManager instance = null;
 
 	private HashMap<CacheEntry, List<ElementoProcesable>> cache;
