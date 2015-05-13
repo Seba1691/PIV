@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
 import wapper.ImageJWrapper;
@@ -25,7 +26,6 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 	private double parametro1;
 	private double parametro2;
 	private boolean fondoBlanco;
-	private String[] tabla;
 
 	public FiltroAutoLocalTreshold(String metodo, int radio, double parametro1, double parametro2, boolean fondoBlanco) {
 		this.cantElementosProcesables = 1;
@@ -34,7 +34,6 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 		this.parametro1 = parametro1;
 		this.parametro2 = parametro2;
 		this.fondoBlanco = fondoBlanco;
-		this.tabla = new String[] { "uno", "dos" };
 	}
 
 	public FiltroAutoLocalTreshold() {
@@ -56,12 +55,11 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 		parameters.put(PARAMETRO1, parametro1);
 		parameters.put(PARAMETRO2, parametro2);
 		parameters.put(FONDO_BLANCO, fondoBlanco);
-		parameters.put("tabla", tabla);
 		return parameters;
 	}
 
 	@Override
-	public void setParametros(HashMap<String, Object> parameters) {
+	public void saveParametros(HashMap<String, Object> parameters) {
 		for (String key : parameters.keySet())
 			switch (key) {
 			case METODO:
@@ -79,9 +77,12 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 			case FONDO_BLANCO:
 				this.fondoBlanco = (Boolean) parameters.get(key);
 				break;
-			case "tabla":
-				this.tabla = (String[]) parameters.get(key);
-				break;
 			}
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		// TODO Auto-generated method stub
+		
 	}
 }

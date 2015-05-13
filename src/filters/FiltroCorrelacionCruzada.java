@@ -2,9 +2,11 @@ package filters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroPIV;
 import pivLayer.Imagen;
 import wapper.JPIVWrapper;
@@ -104,7 +106,7 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 
 	@Override
 	public HashMap<String, Object> getParametros() {
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		HashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
 		parameters.put(MULTI_PASS, multiPass);
 		parameters.put(INTER_WINDOWS_WIDTH, interWindowsWidth);
 		parameters.put(INTER_WINDOWS_HEIGHT, interWindowsHeight);
@@ -128,7 +130,7 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 		return parameters;
 	}
 
-	public void setParametros(HashMap<String, Object> parameters) {
+	public void saveParametros(HashMap<String, Object> parameters) {
 		for (String key : parameters.keySet())
 			switch (key) {
 			case MULTI_PASS:
@@ -192,6 +194,30 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 				this.onlySumOfCorrelation = (boolean) parameters.get(ONLY_SUM_OF_CORRELATION);
 				break;
 			}
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		int passCount = (int) parameters.get(MULTI_PASS);
+		if (((Integer[]) parameters.get(INTER_WINDOWS_WIDTH)).length != passCount)
+			throw new FilterException("El tamaño del arreglo del parametro " + INTER_WINDOWS_WIDTH + " debe ser igual al numero de pasadas (" + passCount + ")");
+		if (((Integer[]) parameters.get(INTER_WINDOWS_HEIGHT)).length != passCount)
+			throw new FilterException("El tamaño del arreglo del parametro " + INTER_WINDOWS_HEIGHT + " debe ser igual al numero de pasadas (" + passCount + ")");
+		if (((Integer[]) parameters.get(SEARCH_DOMAIN_WIDTH)).length != passCount)
+			throw new FilterException("El tamaño del arreglo del parametro " + SEARCH_DOMAIN_WIDTH + " debe ser igual al numero de pasadas (" + passCount + ")");
+		if (((Integer[]) parameters.get(SEARCH_DOMAIN_HEIGHT)).length != passCount)
+			throw new FilterException("El tamaño del arreglo del parametro " + SEARCH_DOMAIN_HEIGHT + " debe ser igual al numero de pasadas (" + passCount + ")");
+		if (((Integer[]) parameters.get(HORIZONTAL_VECTOR_SPACING)).length != passCount)
+			throw new FilterException("El tamaño del arreglo del parametro " + HORIZONTAL_VECTOR_SPACING + " debe ser igual al numero de pasadas (" + passCount + ")");
+		if (((Integer[]) parameters.get(VERTICAL_VECTOR_SPACING)).length != passCount)
+			throw new FilterException("El tamaño del arreglo del parametro " + VERTICAL_VECTOR_SPACING + " debe ser igual al numero de pasadas (" + passCount + ")");
+		if (((Integer[][]) parameters.get(ROI_MATRIX)).length != 2)
+			throw new FilterException("El parametro " + ROI_MATRIX + " debe ser una matriz de 2x2");
+		if (((Integer[][]) parameters.get(ROI_MATRIX))[0].length != 2)
+			throw new FilterException("El parametro " + ROI_MATRIX + " debe ser una matriz de 2x2");
+		if (((Integer[][]) parameters.get(ROI_MATRIX))[1].length != 2)
+			throw new FilterException("El parametro " + ROI_MATRIX + " debe ser una matriz de 2x2");
+
 	}
 
 }

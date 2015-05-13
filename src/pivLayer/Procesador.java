@@ -3,9 +3,8 @@ package pivLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import cache.CacheManager;
-
 import wapper.WrapperException;
+import cache.CacheManager;
 
 public abstract class Procesador {
 
@@ -24,7 +23,6 @@ public abstract class Procesador {
 			for (List<ElementoProcesable> elementosSeleccionados : seleccionador.seleccionar(result, filtro)) {
 				List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
 				if (elementosProcesar == null) {
-					System.out.println(filtro.getClass().getName() + " - no cacheado");
 					elementosProcesar = filtro.filtrar(elementosSeleccionados);
 					CacheManager.getInstance().add(elementosSeleccionados, filtro, elementosProcesar);
 				}

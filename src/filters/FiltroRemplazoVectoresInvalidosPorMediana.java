@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.MapaVectores;
 import wapper.JPIVWrapper;
@@ -28,7 +29,13 @@ public class FiltroRemplazoVectoresInvalidosPorMediana extends FiltroPostProcesa
 	}
 
 	@Override
-	public void setParametros(HashMap<String, Object> parameters) {
+	public void saveParametros(HashMap<String, Object> parameters) {
 		// Nothing
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		// TODO Auto-generated method stub
+		
 	}
 }

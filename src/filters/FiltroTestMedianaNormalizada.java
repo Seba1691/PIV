@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.MapaVectores;
 import wapper.JPIVWrapper;
@@ -59,7 +60,7 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 	}
 
 	@Override
-	public void setParametros(HashMap<String, Object> parameters) {
+	public void saveParametros(HashMap<String, Object> parameters) {
 
 		for (String key : parameters.keySet())
 			switch (key) {
@@ -70,5 +71,11 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 				this.nivelRuido = (Integer) parameters.get(key);
 				break;
 			}
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		// TODO Auto-generated method stub
+		
 	}
 }

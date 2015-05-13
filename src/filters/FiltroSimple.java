@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 
 public class FiltroSimple extends FiltroPreProcesamiento {
@@ -23,8 +24,14 @@ public class FiltroSimple extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public void setParametros(HashMap<String, Object> parameters) {
+	public void saveParametros(HashMap<String, Object> parameters) {
 		// Nothing
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

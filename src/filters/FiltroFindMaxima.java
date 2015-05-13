@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
 
@@ -51,7 +52,7 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public void setParametros(HashMap<String, Object> parameters) {
+	public void saveParametros(HashMap<String, Object> parameters) {
 		for (String key : parameters.keySet())
 			switch (key) {
 			case NOISE_TOLERANCE:
@@ -64,6 +65,12 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 				this.excludeEdges = (Boolean) parameters.get(key);
 				break;
 			}
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

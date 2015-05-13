@@ -18,6 +18,7 @@ public class SettingsFrame extends JFrame {
 	private JTextField textField;
 
 	public SettingsFrame() {
+		setTitle("Propiedades");
 		initComponent();
 		loadSettings();
 	}

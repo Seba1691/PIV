@@ -1,13 +1,17 @@
 package utiles;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class FileHandling {
 
@@ -85,6 +89,18 @@ public class FileHandling {
 		}
 		al.clear();
 		return (array);
+	}
+	
+	public static String getExtension(File file) {
+		return file.getName().substring(file.getName().lastIndexOf('.') + 1);
+	}
+	
+	public static BufferedImage getBufferedImage(File f) throws IOException {
+		return ImageIO.read(f);
+	}
+
+	public static void writeImageToFile(BufferedImage image, File file) throws IOException {
+		ImageIO.write(image, getExtension(file), file);
 	}
 
 }

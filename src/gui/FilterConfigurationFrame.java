@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
+import pivLayer.FilterException;
 import pivLayer.Filtro;
 
 public class FilterConfigurationFrame extends JDialog {
@@ -33,6 +35,7 @@ public class FilterConfigurationFrame extends JDialog {
 	 * Create the frame.
 	 */
 	public FilterConfigurationFrame(Filtro filtro) {
+		setTitle("Configuracion");
 		this.filtro = filtro;
 		InitFrame();
 	}
@@ -64,8 +67,12 @@ public class FilterConfigurationFrame extends JDialog {
 			public void actionPerformed(ActionEvent arg0) {
 				if (table.isEditing())
 					table.getCellEditor().stopCellEditing();
-				filtro.setParametros(tableModelToParameters(tableModel));
-				dispose();
+				try {
+					filtro.setParametros(tableModelToParameters(tableModel));
+					dispose();
+				} catch (FilterException e) {
+					JOptionPane.showMessageDialog((JButton) arg0.getSource(), e.getMessage(), "Error de Parametro", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 		panel.add(btnGuardarConfig);

@@ -2,9 +2,9 @@ package filters;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.FiltroVisualizacion;
 import pivLayer.MapaVectores;
 import wapper.JPIVWrapper;
@@ -12,9 +12,9 @@ import wapper.JPIVWrapper;
 public class FiltroVisualizacionVectores extends FiltroVisualizacion {
 
 	@Override
-	public void visualizar(List<ElementoProcesable> input) {
+	public void visualizar(ElementoProcesable input) {
 		try {
-			JPIVWrapper.visualizar((MapaVectores) input.get(0));
+			JPIVWrapper.visualizar((MapaVectores) input);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -26,8 +26,14 @@ public class FiltroVisualizacionVectores extends FiltroVisualizacion {
 	}
 
 	@Override
-	public void setParametros(HashMap<String, Object> parameters) {
-		
+	public void saveParametros(HashMap<String, Object> parameters) {
+
+	}
+
+	@Override
+	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
+		// TODO Auto-generated method stub
+
 	}
 
 }

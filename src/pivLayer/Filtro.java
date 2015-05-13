@@ -8,8 +8,15 @@ public abstract class Filtro {
 
 	public abstract HashMap<String, Object> getParametros();
 
-	public abstract void setParametros(HashMap<String, Object> parameters);
+	public abstract void saveParametros(HashMap<String, Object> parameters);
 
+	public abstract void validateParametros(HashMap<String, Object> parameters) throws FilterException;
+	
+	public void setParametros(HashMap<String, Object> parameters) throws FilterException {
+		validateParametros(parameters);
+		saveParametros(parameters);
+	}
+	
 	public int getCantElementosProcesables() {
 		return cantElementosProcesables;
 	}
