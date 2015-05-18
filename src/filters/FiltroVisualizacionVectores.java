@@ -33,7 +33,6 @@ public class FiltroVisualizacionVectores extends FiltroVisualizacion {
 	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// TODO Auto-generated method stub
-
 	}
 
 }

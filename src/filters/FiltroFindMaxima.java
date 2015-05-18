@@ -8,9 +8,7 @@ import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
-
 import wapper.ImageJWrapper;
-import wapper.WrapperException;
 
 public class FiltroFindMaxima extends FiltroPreProcesamiento {
 
@@ -32,11 +30,11 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 	}
 
 	public FiltroFindMaxima() {
-		this(5, 1, false);	
+		this(5, 1, false);
 	}
 
 	@Override
-	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws WrapperException {
+	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 		elementosFiltrados.add(ImageJWrapper.findMaxima((Imagen) input.get(0), noiseTolerance, outputType, excludeEdges));
 		return elementosFiltrados;
@@ -70,7 +68,6 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

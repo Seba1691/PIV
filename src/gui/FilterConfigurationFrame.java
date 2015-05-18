@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -71,7 +70,7 @@ public class FilterConfigurationFrame extends JDialog {
 					filtro.setParametros(tableModelToParameters(tableModel));
 					dispose();
 				} catch (FilterException e) {
-					JOptionPane.showMessageDialog((JButton) arg0.getSource(), e.getMessage(), "Error de Parametro", JOptionPane.ERROR_MESSAGE);
+					new GUIException(e).inform();
 				}
 			}
 		});

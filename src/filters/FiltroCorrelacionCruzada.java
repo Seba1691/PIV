@@ -94,14 +94,18 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 	}
 
 	@Override
-	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws WrapperException {
-		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-		elementosFiltrados.add(JPIVWrapper.doPiv((Imagen) input.get(0), (Imagen) input.get(1), //
-				multiPass, interWindowsWidth, interWindowsHeight, searchDomainWidth, searchDomainHeigth, //
-				horizontalVertorSpacing, verticalVertorSpacing, roi, roiMatrix, horizontalPreShift, verticalPreShift, //
-				normalizedMedianTest, replaceInvalidVectorByMedian, medianFilter, smoothing, deformInterrogationWindows, //
-				exportCorrelationFunctions, exportCorrelationVector, exportCorrelationPass, onlySumOfCorrelation));
-		return elementosFiltrados;
+	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
+		try {
+			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
+			elementosFiltrados.add(JPIVWrapper.doPiv((Imagen) input.get(0), (Imagen) input.get(1), //
+					multiPass, interWindowsWidth, interWindowsHeight, searchDomainWidth, searchDomainHeigth, //
+					horizontalVertorSpacing, verticalVertorSpacing, roi, roiMatrix, horizontalPreShift, verticalPreShift, //
+					normalizedMedianTest, replaceInvalidVectorByMedian, medianFilter, smoothing, deformInterrogationWindows, //
+					exportCorrelationFunctions, exportCorrelationVector, exportCorrelationPass, onlySumOfCorrelation));
+			return elementosFiltrados;
+		} catch (WrapperException e) {
+			throw new FilterException("Error al ejecutar el filtro de correlacion cruzada", e);
+		}
 	}
 
 	@Override

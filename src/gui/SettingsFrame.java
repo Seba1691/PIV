@@ -47,11 +47,7 @@ public class SettingsFrame extends JFrame {
 		buttonGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.filtersPath = textField.getText();
-				try {
-					PIVGui.restatApplication();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				PIVGui.restatApplication();
 			}
 		});
 

@@ -138,7 +138,7 @@ public class FiltersManager {
 			}
 			setFiltersClassLoader(new URLClassLoader(filtersURL.toArray(new URL[filtersURL.size()])));
 		} catch (Exception e) {
-			// throw new ManagerException(e);
+			throw new ManagerException("Error al cargar los filtros desde " + Settings.filtersPath, e);
 		}
 	}
 

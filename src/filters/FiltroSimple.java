@@ -30,8 +30,7 @@ public class FiltroSimple extends FiltroPreProcesamiento {
 
 	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
-		// TODO Auto-generated method stub
-		
+		// Nothing
 	}
 
 }

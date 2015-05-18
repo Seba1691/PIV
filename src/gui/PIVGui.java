@@ -6,6 +6,10 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
@@ -40,7 +44,11 @@ import javax.swing.border.TitledBorder;
 
 import manager.FiltersManager;
 import manager.ManagerException;
+
+import org.apache.commons.lang3.StringUtils;
+
 import pivLayer.ElementoProcesable;
+import pivLayer.FilterException;
 import pivLayer.Filtro;
 import pivLayer.FiltroPIV;
 import pivLayer.FiltroPostProcesamiento;
@@ -56,26 +64,24 @@ import pivLayer.Seleccionador;
 import pivLayer.SeleccionadorCascada;
 import pivLayer.SeleccionadorPares;
 import utiles.FileHandling;
-import wapper.WrapperException;
+import utiles.FileHandlingException;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class PIVGui {
 
 	private static JFrame PIV;
 
-	private DefaultListModel<File> selectedImagesFilesModel;
-	private JList<File> listImagesFiles;
+	private DefaultListModel<String> selectedImagesFilesModel;
+	private JList<String> listImagesFiles;
 	private List<Imagen> imagesList;
 
-	private DefaultListModel<File> selectedVectorFilesModel;
-	private JList<File> listVectorFiles;
+	private DefaultListModel<String> selectedVectorFilesModel;
+	private JList<String> listVectorFiles;
 	private List<MapaVectores> vectorList;
 
 	private DefaultComboBoxModel<ComboItemFilter> preProcessingFiltersModel;
@@ -134,16 +140,24 @@ public class PIVGui {
 	public void addSelectedFile(File f) {
 		try {
 			if (FileHandling.getExtension(f).equals("jvc")) {
-				this.selectedVectorFilesModel.addElement(f);
-				vectorList.add(new MapaVectores(FileHandling.readArrayFromFile(f.getPath())));
+				addVectorList(f.getName(), new MapaVectores(FileHandling.readArrayFromFile(f.getPath())));
 			} else {
-				this.selectedImagesFilesModel.addElement(f);
-				imagesList.add(new Imagen(FileHandling.getBufferedImage(f)));
+				addImageList(f.getName(), new Imagen(FileHandling.getBufferedImage(f)));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (FileHandlingException e) {
+			new GUIException(e).inform();
 		}
 
+	}
+
+	private void addVectorList(String name, MapaVectores vec) {
+		this.selectedVectorFilesModel.addElement(name);
+		vectorList.add(vec);
+	}
+
+	private void addImageList(String name, Imagen img) {
+		this.selectedImagesFilesModel.addElement(name);
+		imagesList.add(img);
 	}
 
 	/**
@@ -201,10 +215,29 @@ public class PIVGui {
 			}
 		});
 		menuFile.add(itemChooseFile);
-		
+
+		JMenuItem menuItem = new JMenuItem("Guardar Resultados");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
+				int[] elem = listVectorFiles.getSelectedIndices();
+				for (int i = elem.length - 1; i >= 0; i--) {
+					MapaVectores vectorMap = vectorList.get(elem[i]);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						int resultSave = guardar(vectorMap);
+						if (resultSave == 1) {
+							selectedVectorFilesModel.remove(elem[i]);
+							vectorList.remove(elem[i]);
+						}
+					}
+				}
+			}
+		});
+		menuFile.add(menuItem);
+
 		JMenu menuPreProcesamiento = new JMenu("Pre Procesamiento");
 		menuBar.add(menuPreProcesamiento);
-		
+
 		JMenuItem itemPreview = new JMenuItem("Previsualizar");
 		itemPreview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -221,7 +254,15 @@ public class PIVGui {
 			public void actionPerformed(ActionEvent arg0) {
 				List<ElementoProcesable> results = doPIV();
 				visualizar(results);
-				guardar(results);
+				int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
+				for (ElementoProcesable vectorMap : results) {
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						int resultSave = guardar(vectorMap);
+						if (resultSave == 1)
+							continue;
+					}
+					addVectorList("sinNombre" + ((Math.random() * 100)), (MapaVectores) vectorMap);
+				}
 			}
 		});
 		menuPIV.add(itemDoPIV);
@@ -241,7 +282,7 @@ public class PIVGui {
 		// -- Archivos --//
 
 		// -- Imagenes --//
-		selectedImagesFilesModel = new DefaultListModel<File>();
+		selectedImagesFilesModel = new DefaultListModel<String>();
 		imagesList = new ArrayList<Imagen>();
 		JTabbedPane tabbedPaneImagesFiles = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPaneImagesFiles.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -251,12 +292,21 @@ public class PIVGui {
 		JScrollPane scrollPaneFiles = new JScrollPane();
 		tabbedPaneImagesFiles.addTab("Imagenes", null, scrollPaneFiles, null);
 
-		listImagesFiles = new JList<File>();
+		listImagesFiles = new JList<String>();
+		listImagesFiles.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent ke) {
+				int code = ke.getKeyCode();
+				if (code == KeyEvent.VK_DELETE)
+					deleteSelectedImages();
+
+			}
+		});
 		listImagesFiles.setModel(selectedImagesFilesModel);
 		listImagesFiles.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
-				if (evt.getClickCount() == 2) {					
+				if (evt.getClickCount() == 2) {
 					ImageFrame f = new ImageFrame(imagesList.get(listImagesFiles.getSelectedIndex()));
 					f.setVisible(true);
 				}
@@ -266,7 +316,7 @@ public class PIVGui {
 
 		// -- Mapa de vectores --//
 
-		selectedVectorFilesModel = new DefaultListModel<File>();
+		selectedVectorFilesModel = new DefaultListModel<String>();
 		vectorList = new ArrayList<MapaVectores>();
 		JTabbedPane tabbedPaneVectorFiles = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPaneVectorFiles.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -275,7 +325,16 @@ public class PIVGui {
 		JScrollPane scrollPaneVectorFiles = new JScrollPane();
 		tabbedPaneVectorFiles.addTab("Resultados", null, scrollPaneVectorFiles, null);
 
-		listVectorFiles = new JList<File>();
+		listVectorFiles = new JList<String>();
+		listVectorFiles.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent ke) {
+				int code = ke.getKeyCode();
+				if (code == KeyEvent.VK_DELETE)
+					deleteSelectedVector();
+
+			}
+		});
 		listVectorFiles.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
@@ -321,8 +380,10 @@ public class PIVGui {
 					FilterRowPanel<FiltroPreProcesamiento> newRowPanel = new FilterRowPanel<FiltroPreProcesamiento>(filtroPreProcesamiento, filterName, preProcessingFilterList);
 					newRowPanel.insertRowIn(gridPreProcessingPanel);
 					preProcessingFilterList.add(filtroPreProcesamiento);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ManagerException e) {
-					e.printStackTrace();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					new GUIException("Error al crear el filtro seleccionado", e).inform();
+				} catch (ManagerException e) {
+					new GUIException(e).inform();
 				}
 			}
 		});
@@ -382,8 +443,10 @@ public class PIVGui {
 					FilterRowPanel<FiltroPIV> newRowPanel = new FilterRowPanel<FiltroPIV>(filtroPIVProcesamiento, filterName, pivProcessingFilterList);
 					newRowPanel.insertRowIn(gridPIVProcessingPanel);
 					pivProcessingFilterList.add(filtroPIVProcesamiento);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ManagerException e) {
-					e.printStackTrace();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					new GUIException("Error al crear el filtro seleccionado", e).inform();
+				} catch (ManagerException e) {
+					new GUIException(e).inform();
 				}
 			}
 		});
@@ -426,8 +489,10 @@ public class PIVGui {
 					FilterRowPanel<FiltroPostProcesamiento> newRowPanel = new FilterRowPanel<FiltroPostProcesamiento>(filtroPostProcesamiento, filterName, postProcessingFilterList);
 					newRowPanel.insertRowIn(gridPostProcessingPanel);
 					postProcessingFilterList.add(filtroPostProcesamiento);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ManagerException e) {
-					e.printStackTrace();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					new GUIException("Error al crear el filtro seleccionado", e).inform();
+				} catch (ManagerException e) {
+					new GUIException(e).inform();
 				}
 			}
 		});
@@ -470,8 +535,10 @@ public class PIVGui {
 					FilterRowPanel<FiltroVisualizacion> newRowPanel = new FilterRowPanel<FiltroVisualizacion>(filtroVisualizacion, filterName, visualizationFilterList);
 					newRowPanel.insertRowIn(gridVisualizationPanel);
 					visualizationFilterList.add(filtroVisualizacion);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | ManagerException e) {
-					e.printStackTrace();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					new GUIException("Error al crear el filtro seleccionado", e).inform();
+				} catch (ManagerException e) {
+					new GUIException(e).inform();
 				}
 			}
 		});
@@ -512,8 +579,7 @@ public class PIVGui {
 		panelBoludeces.add(btnMostrarlistas);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(imagesList.size());
-
+				JOptionPane.showMessageDialog((JButton) arg0.getSource(), "asdasdasdasdasdasd", "Error de Parametro", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 
@@ -557,11 +623,11 @@ public class PIVGui {
 			PIV.dispose();
 			new PIVGui();
 		} catch (ManagerException e) {
-			e.printStackTrace();
+			new GUIException(e).inform();
 		}
 	}
-	
-	private List<ElementoProcesable> getSelectedImages(){
+
+	private List<ElementoProcesable> getSelectedImages() {
 		List<ElementoProcesable> inputImage = new ArrayList<ElementoProcesable>();
 
 		int[] elem = listImagesFiles.getSelectedIndices();
@@ -569,23 +635,54 @@ public class PIVGui {
 			Imagen im = imagesList.get(i);
 			inputImage.add(im);
 		}
-		
+
 		return inputImage;
 	}
-	
-	private void doPreview(){
+
+	@SuppressWarnings("unused")
+	private List<ElementoProcesable> getSelectedVector() {
+		List<ElementoProcesable> inputImage = new ArrayList<ElementoProcesable>();
+
+		int[] elem = listVectorFiles.getSelectedIndices();
+		for (int i : elem) {
+			MapaVectores im = vectorList.get(i);
+			inputImage.add(im);
+		}
+
+		return inputImage;
+	}
+
+	private void deleteSelectedImages() {
+		int[] elem = listImagesFiles.getSelectedIndices();
+		for (int i = elem.length - 1; i >= 0; i--) {
+			int j = elem[i];
+			imagesList.remove(j);
+			selectedImagesFilesModel.remove(j);
+		}
+	}
+
+	private void deleteSelectedVector() {
+		int[] elem = listVectorFiles.getSelectedIndices();
+		for (int i = elem.length - 1; i >= 0; i--) {
+			int j = elem[i];
+			vectorList.remove(j);
+			selectedVectorFilesModel.remove(j);
+		}
+	}
+
+	private void doPreview() {
 		Seleccionador seleccionadorPares = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
 		List<ElementoProcesable> inputImage = getSelectedImages();
 		List<ArrayList<ElementoProcesable>> resultList = new ArrayList<ArrayList<ElementoProcesable>>();
 		resultList.add((ArrayList<ElementoProcesable>) inputImage);
-		for (FiltroPreProcesamiento f : getPreProcessingFilterList()){
+		for (FiltroPreProcesamiento f : getPreProcessingFilterList()) {
 			ArrayList<FiltroPreProcesamiento> filterList = new ArrayList<FiltroPreProcesamiento>();
 			filterList.add(f);
 			Procesador preProcesador = new PreProcesador(filterList, seleccionadorPares);
 			try {
 				inputImage = preProcesador.procesar(inputImage);
-			} catch (WrapperException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				new GUIException(e).inform();
 			}
 			resultList.add((ArrayList<ElementoProcesable>) inputImage);
 		}
@@ -614,14 +711,13 @@ public class PIVGui {
 			outputPIV = pivProcesador.procesar(outputPre);
 			outputPost = postProcesador.procesar(outputPIV);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (FilterException e) {
+			new GUIException(e).inform();
 		}
 
 		return outputPost;
 
 	}
-	
 
 	private void visualizar(List<ElementoProcesable> visualizationList) {
 		for (ElementoProcesable vectorMap : visualizationList)
@@ -629,23 +725,24 @@ public class PIVGui {
 				filter.visualizar(vectorMap);
 	}
 
-	private void guardar(List<ElementoProcesable> visualizationList) {
-		int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
-		if (dialogResult == JOptionPane.YES_OPTION) {
-			for (ElementoProcesable vectorMap : visualizationList) {
-				JFileChooser chooser = new JFileChooser();
-				int retrival = chooser.showSaveDialog(null);
-				if (retrival == JFileChooser.APPROVE_OPTION) {
-					DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
-					df.applyPattern("+0.0000E00;-0.0000E00");
-					try {
-						FileHandling.writeArrayToFile(((MapaVectores) vectorMap).getMapaVectores(), chooser.getSelectedFile() + ".jvc", df);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+	private int guardar(ElementoProcesable vectorMap) {
+		JFileChooser chooser = new JFileChooser();
+		int retrival = chooser.showSaveDialog(null);
+		if (retrival == JFileChooser.APPROVE_OPTION) {
+			DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+			df.applyPattern("+0.0000E00;-0.0000E00");
+			try {
+				String selectedFileName = chooser.getSelectedFile().toString();
+				if (StringUtils.isBlank(FileHandling.getExtension(chooser.getSelectedFile())))
+					selectedFileName = selectedFileName + ".jvc";
+				FileHandling.writeArrayToFile(((MapaVectores) vectorMap).getMapaVectores(), selectedFileName, df);
+				addSelectedFile(new File(selectedFileName));
+				return 1;
+			} catch (IOException e) {
+				new GUIException("Error al guardar el mapa de vectores", e).inform();
 			}
 		}
-
+		return 0;
 	}
+
 }

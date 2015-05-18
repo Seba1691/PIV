@@ -76,6 +76,5 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// TODO Auto-generated method stub
-		
 	}
 }

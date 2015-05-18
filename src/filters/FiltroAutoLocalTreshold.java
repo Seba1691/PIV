@@ -9,7 +9,6 @@ import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
 import wapper.ImageJWrapper;
-import wapper.WrapperException;
 
 public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 
@@ -41,7 +40,7 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws WrapperException {
+	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 		elementosFiltrados.add(ImageJWrapper.autoLocalThreshold((Imagen) input.get(0), metodo, radio, parametro1, parametro2, fondoBlanco));
 		return elementosFiltrados;
@@ -83,6 +82,6 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

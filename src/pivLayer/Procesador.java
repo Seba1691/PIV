@@ -3,7 +3,6 @@ package pivLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import wapper.WrapperException;
 import cache.CacheManager;
 
 public abstract class Procesador {
@@ -16,7 +15,7 @@ public abstract class Procesador {
 		this.seleccionador = seleccionador;
 	}
 
-	public List<ElementoProcesable> procesar(List<ElementoProcesable> input) throws WrapperException {
+	public List<ElementoProcesable> procesar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> result = input;
 		for (FiltroProcesable filtro : getFiltros()) {
 			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();

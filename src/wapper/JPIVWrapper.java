@@ -22,40 +22,21 @@ import pivLayer.MapaVectores;
 
 public class JPIVWrapper {
 
-	/**
-	 * Procesador PIV
-	 * 
-	 * @param onlySumOfCorrelation
-	 * @param exportCorrelationPass
-	 * @param exportCorrelationVector
-	 * @param exportCorrelationFunctions
-	 * @param deformInterrogationWindows
-	 * @param smoothing
-	 * @param medianFilter
-	 * @param replaceInvalidVectorByMedian
-	 * @param normalizedMedianTest
-	 * @param verticalPreShift
-	 * @param horizontalPreShift
-	 * @param roiMatrix
-	 * @param roi
-	 * @param verticalVertorSpacing
-	 * @param horizontalVertorSpacing
-	 * @param searchDomainHeigth
-	 * @param searchDomainWidth
-	 * @param interWindowsHeight
-	 * @param interWindowsWidth
-	 * @param multiPass
-	 */
+	private static final String JPIV_RESOURCES_PATH = System.getProperty("user.dir") + "/resources/jpivlib";
+
 	public static MapaVectores doPiv(Imagen image1, Imagen image2, int multiPass, Integer[] interWindowsWidth, Integer[] interWindowsHeight, Integer[] searchDomainWidth, Integer[] searchDomainHeigth, Integer[] horizontalVertorSpacing, Integer[] verticalVertorSpacing, //
 			boolean roi, Integer[][] roiMatrix, int horizontalPreShift, int verticalPreShift, boolean normalizedMedianTest, boolean replaceInvalidVectorByMedian, boolean medianFilter, boolean smoothing, //
 			boolean deformInterrogationWindows, boolean exportCorrelationFunctions, int exportCorrelationVector, int exportCorrelationPass, boolean onlySumOfCorrelation) throws WrapperException {
 		try {
-			String path = "C:/Users/Seba/Desktop/PIV/Salidas/";
-			String input1 = path + "imageSaved1.png";
-			String input2 = path + "imageSaved2.png";
+			String path = JPIV_RESOURCES_PATH + "/tmp/";
+			int rnd = (int) (Math.random() * 1000000);
+			String input1 = path + "in" + rnd + ".png";
+			String input2 = path + "in" + (int) (rnd + 1) + ".png";
 
-			ImageIO.write(image1.getImage(), "png", new File(input1));
-			ImageIO.write(image2.getImage(), "png", new File(input2));
+			File fileInput1 = new File(input1);
+			File fileInput2 = new File(input2);
+			ImageIO.write(image1.getImage(), "png", fileInput1);
+			ImageIO.write(image2.getImage(), "png", fileInput2);
 
 			JPiv jpiv = new JPiv();
 
@@ -68,7 +49,7 @@ public class JPIVWrapper {
 			settings.pivROIP1x = roiMatrix[0][0];
 			settings.pivROIP2x = roiMatrix[0][1];
 			settings.pivROIP1y = roiMatrix[1][0];
-			settings.pivROIP2x = roiMatrix[0][1];
+			settings.pivROIP2x = roiMatrix[1][1];
 
 			settings.pivHorPreShift = horizontalPreShift;
 			settings.pivVerPreShift = verticalPreShift;
@@ -85,14 +66,12 @@ public class JPIVWrapper {
 			settings.exportCorrFunctionNum = exportCorrelationVector;
 			settings.exportCorrFunctionOnlySumOfCorr = onlySumOfCorrelation;
 
-			jpiv.getSettings().jpivLibPath = System.getProperty("user.dir") + "/resources/jpivlib";
+			jpiv.getSettings().jpivLibPath = JPIV_RESOURCES_PATH;
 			PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
 			System.setOut(defaultPrintStream);
 			System.setErr(defaultPrintStream);
 
-			int rmd = (int) (Math.random() * 100);
-			System.out.println(rmd);
-			String salida = path + "salida" + rmd;
+			String salida = path + "out" + rnd;
 			jpiv.getSettings().pivDefaultDestFileName = salida;
 			jpiv.getSettings().pivUseDefaultDestFileName = true;
 			jpiv.getListFrame().appendElement(input1);
@@ -100,10 +79,20 @@ public class JPIVWrapper {
 			jpiv.getListFrame().selectElements(0, 1);
 			jpiv2.PivEvaluation evaluation = new jpiv2.PivEvaluation(jpiv);
 			evaluation.run();
-			return new MapaVectores(fileToMatrix(salida + "1.jvc"));
+
+			MapaVectores result = new MapaVectores(fileToMatrix(salida + "1.jvc"));
+
+			jpiv = null;
+			System.gc();
+
+			new File(salida + "1.jvc").delete();
+			System.out.println(fileInput1.delete());
+			System.out.println(fileInput2.delete());
+
+			return result;
 
 		} catch (IOException e) {
-			throw new WrapperException(e);
+			throw new WrapperException("Ocurrio un error ejecutando invocando a la aplicacion JPIV", e);
 		}
 	}
 
@@ -151,8 +140,10 @@ public class JPIVWrapper {
 	}
 
 	public static void visualizar(MapaVectores mapaVectores) throws IOException {
-		MainPruebaAdapter.matrixToFile(mapaVectores.getMapaVectores(), "C:/Users/Seba/Desktop/PIV/Salidas/salidaFiltrada");
-		new DisplayVecFrame(new JPiv(), "C:/Users/Seba/Desktop/PIV/Salidas/salidaFiltrada.jvc");
+		String salida = JPIV_RESOURCES_PATH + "/tmp/out" + (int) (Math.random() * 1000000);
+		MainPruebaAdapter.matrixToFile(mapaVectores.getMapaVectores(), salida);
+		new DisplayVecFrame(new JPiv(), salida + ".jvc");
+		new File(salida + ".jvc").delete();
 	}
 
 	private static int[] integerToIntArray(Integer[] array) {

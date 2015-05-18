@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -17,6 +16,7 @@ import javax.swing.JToolBar;
 
 import pivLayer.Imagen;
 import utiles.FileHandling;
+import utiles.FileHandlingException;
 
 public class ImageFrame extends JFrame {
 
@@ -50,8 +50,8 @@ public class ImageFrame extends JFrame {
 				if (retrival == JFileChooser.APPROVE_OPTION) {
 					try {
 						FileHandling.writeImageToFile(getImage().getImage(), chooser.getSelectedFile());
-					} catch (IOException e) {
-						e.printStackTrace();
+					} catch (FileHandlingException e) {
+						new GUIException(e).inform();
 					}
 				}
 			}

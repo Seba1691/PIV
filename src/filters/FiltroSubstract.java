@@ -8,9 +8,7 @@ import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
-
 import wapper.ImageJWrapper;
-import wapper.WrapperException;
 
 public class FiltroSubstract extends FiltroPreProcesamiento {
 
@@ -19,7 +17,7 @@ public class FiltroSubstract extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws WrapperException {
+	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 		elementosFiltrados.add(ImageJWrapper.substractFilter((Imagen) input.get(0), (Imagen) input.get(1)));
 		return elementosFiltrados;
@@ -38,7 +36,6 @@ public class FiltroSubstract extends FiltroPreProcesamiento {
 	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
