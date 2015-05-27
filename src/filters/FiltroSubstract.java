@@ -8,7 +8,7 @@ import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
 import pivLayer.FiltroPreProcesamiento;
 import pivLayer.Imagen;
-import wapper.ImageJWrapper;
+import wrapper.ImageJWrapper;
 
 public class FiltroSubstract extends FiltroPreProcesamiento {
 

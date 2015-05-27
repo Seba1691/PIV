@@ -1,4 +1,4 @@
-package wapper;
+package wrapper;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

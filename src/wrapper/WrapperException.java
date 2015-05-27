@@ -1,4 +1,4 @@
-package wapper;
+package wrapper;
 
 public class WrapperException extends Exception{
 

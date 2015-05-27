@@ -8,7 +8,7 @@ import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.MapaVectores;
-import wapper.JPIVWrapper;
+import wrapper.JPIVWrapper;
 
 public class FiltroRemplazoVectoresInvalidosPorMediana extends FiltroPostProcesamiento {
 

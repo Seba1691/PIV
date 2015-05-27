@@ -1,4 +1,4 @@
-package wapper;
+package wrapper;
 
 import fiji.threshold.Auto_Local_Threshold;
 import ij.ImagePlus;

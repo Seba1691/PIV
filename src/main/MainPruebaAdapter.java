@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 
 import jpiv2.FileHandling;
-import wapper.WrapperException;
+import wrapper.WrapperException;
 
 public class MainPruebaAdapter {
 

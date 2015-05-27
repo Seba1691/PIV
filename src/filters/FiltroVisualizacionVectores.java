@@ -7,7 +7,7 @@ import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
 import pivLayer.FiltroVisualizacion;
 import pivLayer.MapaVectores;
-import wapper.JPIVWrapper;
+import wrapper.JPIVWrapper;
 
 public class FiltroVisualizacionVectores extends FiltroVisualizacion {
 
