@@ -7,22 +7,22 @@ import java.util.List;
 import pivLayer.ElementoProcesable;
 import pivLayer.Filtro;
 
-public class CacheManager {
+public class CachingManager {
 
 	private static final int CACHE_SIZE = 300;
-	private static CacheManager instance = null;
+	private static CachingManager instance = null;
 
 	private HashMap<CacheEntry, List<ElementoProcesable>> cache;
 	private List<CacheEntry> recentUsed;
 
-	protected CacheManager() {
+	protected CachingManager() {
 		cache = new HashMap<CacheEntry, List<ElementoProcesable>>();
 		recentUsed = new ArrayList<CacheEntry>();
 	}
 
-	public static CacheManager getInstance() {
+	public static CachingManager getInstance() {
 		if (instance == null) {
-			instance = new CacheManager();
+			instance = new CachingManager();
 		}
 		return instance;
 	}

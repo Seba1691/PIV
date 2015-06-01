@@ -3,7 +3,7 @@ package pivLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import cache.CacheManager;
+import cache.CachingManager;
 
 public abstract class Procesador {
 
@@ -11,9 +11,9 @@ public abstract class Procesador {
 	protected List<Seleccionador> seleccionadores;
 
 	public Procesador() {
-		
+
 	}
-	
+
 	public Procesador(List<FiltroProcesable> filtros, List<Seleccionador> seleccionadores) {
 		this.filtros = filtros;
 		this.seleccionadores = seleccionadores;
@@ -25,10 +25,10 @@ public abstract class Procesador {
 			FiltroProcesable filtro = filtros.get(i);
 			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 			for (List<ElementoProcesable> elementosSeleccionados : seleccionadores.get(i).seleccionar(result, filtro)) {
-				List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
+				List<ElementoProcesable> elementosProcesar = CachingManager.getInstance().get(elementosSeleccionados, filtro);
 				if (elementosProcesar == null) {
 					elementosProcesar = filtro.filtrar(elementosSeleccionados);
-					CacheManager.getInstance().add(elementosSeleccionados, filtro, elementosProcesar);
+					CachingManager.getInstance().add(elementosSeleccionados, filtro, elementosProcesar);
 				}
 				elementosFiltrados.addAll(elementosProcesar);
 			}
