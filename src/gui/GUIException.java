@@ -19,7 +19,7 @@ public class GUIException extends Exception {
 	}
 
 	public void inform() {
-		JOptionPane.showMessageDialog(null, getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, getCause().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 }

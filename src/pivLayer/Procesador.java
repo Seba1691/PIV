@@ -7,19 +7,24 @@ import cache.CacheManager;
 
 public abstract class Procesador {
 
-	private Seleccionador seleccionador;
-
 	protected List<FiltroProcesable> filtros;
+	protected List<Seleccionador> seleccionadores;
 
-	public Procesador(Seleccionador seleccionador) {
-		this.seleccionador = seleccionador;
+	public Procesador() {
+		
+	}
+	
+	public Procesador(List<FiltroProcesable> filtros, List<Seleccionador> seleccionadores) {
+		this.filtros = filtros;
+		this.seleccionadores = seleccionadores;
 	}
 
 	public List<ElementoProcesable> procesar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> result = input;
-		for (FiltroProcesable filtro : getFiltros()) {
+		for (int i = 0; i < filtros.size(); i++) {
+			FiltroProcesable filtro = filtros.get(i);
 			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-			for (List<ElementoProcesable> elementosSeleccionados : seleccionador.seleccionar(result, filtro)) {
+			for (List<ElementoProcesable> elementosSeleccionados : seleccionadores.get(i).seleccionar(result, filtro)) {
 				List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
 				if (elementosProcesar == null) {
 					elementosProcesar = filtro.filtrar(elementosSeleccionados);
@@ -30,18 +35,6 @@ public abstract class Procesador {
 			result = elementosFiltrados;
 		}
 		return result;
-	}
-
-	public Seleccionador getSeleccionador() {
-		return seleccionador;
-	}
-
-	public void setSeleccionador(Seleccionador seleccionador) {
-		this.seleccionador = seleccionador;
-	}
-
-	private List<FiltroProcesable> getFiltros() {
-		return filtros;
 	}
 
 }

@@ -3,13 +3,7 @@ package pivLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 public class SeleccionadorCascada extends Seleccionador {
-
-	public SeleccionadorCascada(String configuracion) {
-		super(configuracion);
-	}
 
 	@Override
 	public List<List<ElementoProcesable>> seleccionar(List<ElementoProcesable> input, Filtro filtro) {
@@ -23,12 +17,14 @@ public class SeleccionadorCascada extends Seleccionador {
 				elementos.add(input.get(i + j));
 
 			seleccionados.add(elementos);
-
-			if (getConfiguracion().equals(SELECCIONADOR_DOBLE))
-				seleccionados.add(Lists.reverse(elementos));
 		}
 
 		return seleccionados;
+	}
+
+	@Override
+	public String toString() {
+		return "Cascada";
 	}
 
 }

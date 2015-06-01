@@ -6,6 +6,8 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -61,7 +63,6 @@ import pivLayer.PreProcesador;
 import pivLayer.Procesador;
 import pivLayer.ProcesadorPIV;
 import pivLayer.Seleccionador;
-import pivLayer.SeleccionadorCascada;
 import pivLayer.SeleccionadorPares;
 import utiles.FileHandling;
 import utiles.FileHandlingException;
@@ -99,9 +100,14 @@ public class PIVGui {
 	private JComboBox<ComboItemFilter> comboBoxVisualization;
 
 	private List<FiltroPreProcesamiento> preProcessingFilterList;
+	private List<Seleccionador> preProcessingSeleccionatorList;
 	private List<FiltroPIV> pivProcessingFilterList;
+	private List<Seleccionador> pivProcessingSeleccionatorList;
 	private List<FiltroPostProcesamiento> postProcessingFilterList;
+	private List<Seleccionador> postProcessingSeleccionatorList;
 	private List<FiltroVisualizacion> visualizationFilterList;
+
+	private Integer countVectorMap = 1;
 
 	/**
 	 * Launch the application.
@@ -135,6 +141,9 @@ public class PIVGui {
 		pivProcessingFilterList = new ArrayList<>();
 		postProcessingFilterList = new ArrayList<>();
 		visualizationFilterList = new ArrayList<>();
+		preProcessingSeleccionatorList = new ArrayList<>();
+		pivProcessingSeleccionatorList = new ArrayList<>();
+		postProcessingSeleccionatorList = new ArrayList<>();
 	}
 
 	public void addSelectedFile(File f) {
@@ -252,16 +261,26 @@ public class PIVGui {
 		JMenuItem itemDoPIV = new JMenuItem("Ejecutar PIV");
 		itemDoPIV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				List<ElementoProcesable> results = doPIV();
-				visualizar(results);
-				int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
-				for (ElementoProcesable vectorMap : results) {
-					if (dialogResult == JOptionPane.YES_OPTION) {
-						int resultSave = guardar(vectorMap);
-						if (resultSave == 1)
-							continue;
+				try {
+					List<ElementoProcesable> results;
+					results = doPIV();
+
+					if (results.size() == 0)
+						return;
+
+					visualizar(results);
+					int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
+					for (ElementoProcesable vectorMap : results) {
+						if (dialogResult == JOptionPane.YES_OPTION) {
+							int resultSave = guardar(vectorMap);
+							if (resultSave == 1)
+								continue;
+						}
+						addVectorList("sinNombre" + countVectorMap, (MapaVectores) vectorMap);
+						countVectorMap++;
 					}
-					addVectorList("sinNombre" + ((Math.random() * 100)), (MapaVectores) vectorMap);
+				} catch (GUIException e) {
+					e.inform();
 				}
 			}
 		});
@@ -377,9 +396,8 @@ public class PIVGui {
 				try {
 					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroPreProcesamiento = ((FiltroPreProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
-					FilterRowPanel<FiltroPreProcesamiento> newRowPanel = new FilterRowPanel<FiltroPreProcesamiento>(filtroPreProcesamiento, filterName, preProcessingFilterList);
+					FilterRowPanel<FiltroPreProcesamiento> newRowPanel = new FilterRowPanel<FiltroPreProcesamiento>(filtroPreProcesamiento, new SeleccionadorPares(), filterName, preProcessingFilterList, preProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPreProcessingPanel);
-					preProcessingFilterList.add(filtroPreProcesamiento);
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException e) {
@@ -395,12 +413,12 @@ public class PIVGui {
 
 		gridPreProcessingPanel = new JPanel();
 		scrollPaneSelectedPreProcessingFilters.setViewportView(gridPreProcessingPanel);
-		FormLayout fl_gridPreProcessingPanel = new FormLayout(new ColumnSpec[] { ColumnSpec.decode("0px:grow"), }, new RowSpec[] { RowSpec.decode("75px"), });
+		FormLayout fl_gridPreProcessingPanel = new FormLayout(new ColumnSpec[] { ColumnSpec.decode("0px:grow"), }, new RowSpec[] {});
 		gridPreProcessingPanel.setLayout(fl_gridPreProcessingPanel);
 
 		JPanel newRowPreProcessing = new JPanel();
 		newRowPreProcessing.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		gridPreProcessingPanel.add(newRowPreProcessing, "1, 1, fill, fill");
+		// gridPreProcessingPanel.add(newRowPreProcessing, "1, 1, fill, fill");
 		newRowPreProcessing.setLayout(null);
 
 		JLabel lblPreProcessingFiltername = new JLabel("FilterName");
@@ -412,8 +430,16 @@ public class PIVGui {
 		newRowPreProcessing.add(btnPreProcessingDeleteFilter);
 
 		JButton btnPreProcessingEditFilter = new JButton("Editar");
-		btnPreProcessingEditFilter.setBounds(386, 23, 91, 23);
+		btnPreProcessingEditFilter.setBounds(185, 23, 91, 23);
 		newRowPreProcessing.add(btnPreProcessingEditFilter);
+
+		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+			}
+		});
+		comboBox.setBounds(400, 23, 29, 22);
+		newRowPreProcessing.add(comboBox);
 
 		// ----- PIV PROCESAMIENTO PANEL
 		JPanel panelPIVProcessing = new JPanel();
@@ -434,18 +460,20 @@ public class PIVGui {
 		JButton btnAddPIVProcessingFilter = new JButton("Agregar");
 		btnAddPIVProcessingFilter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String filterName = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterName();
-				String filterClass = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterClassName();
-				FiltroPIV filtroPIVProcesamiento;
 				try {
+					if (pivProcessingFilterList.size() > 0)
+						throw new GUIException("Solo puede existir un filtro PIV simultaneamente");
+
+					String filterName = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterName();
+					String filterClass = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterClassName();
+					FiltroPIV filtroPIVProcesamiento;
 					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroPIVProcesamiento = ((FiltroPIV) Class.forName(filterClass, true, filtersClassLoader).newInstance());
-					FilterRowPanel<FiltroPIV> newRowPanel = new FilterRowPanel<FiltroPIV>(filtroPIVProcesamiento, filterName, pivProcessingFilterList);
+					FilterRowPanel<FiltroPIV> newRowPanel = new FilterRowPanel<FiltroPIV>(filtroPIVProcesamiento, new SeleccionadorPares(), filterName, pivProcessingFilterList, pivProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPIVProcessingPanel);
-					pivProcessingFilterList.add(filtroPIVProcesamiento);
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					new GUIException("Error al crear el filtro seleccionado", e).inform();
-				} catch (ManagerException e) {
+				} catch (ManagerException | GUIException e) {
 					new GUIException(e).inform();
 				}
 			}
@@ -486,9 +514,8 @@ public class PIVGui {
 				try {
 					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroPostProcesamiento = ((FiltroPostProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
-					FilterRowPanel<FiltroPostProcesamiento> newRowPanel = new FilterRowPanel<FiltroPostProcesamiento>(filtroPostProcesamiento, filterName, postProcessingFilterList);
+					FilterRowPanel<FiltroPostProcesamiento> newRowPanel = new FilterRowPanel<FiltroPostProcesamiento>(filtroPostProcesamiento, new SeleccionadorPares(), filterName, postProcessingFilterList, postProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPostProcessingPanel);
-					postProcessingFilterList.add(filtroPostProcesamiento);
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException e) {
@@ -532,9 +559,8 @@ public class PIVGui {
 				try {
 					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
 					filtroVisualizacion = ((FiltroVisualizacion) Class.forName(filterClass, true, filtersClassLoader).newInstance());
-					FilterRowPanel<FiltroVisualizacion> newRowPanel = new FilterRowPanel<FiltroVisualizacion>(filtroVisualizacion, filterName, visualizationFilterList);
+					FilterRowPanel<FiltroVisualizacion> newRowPanel = new FilterRowPanel<FiltroVisualizacion>(filtroVisualizacion, null, filterName, visualizationFilterList, null);
 					newRowPanel.insertRowIn(gridVisualizationPanel);
-					visualizationFilterList.add(filtroVisualizacion);
 				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException e) {
@@ -671,51 +697,53 @@ public class PIVGui {
 	}
 
 	private void doPreview() {
-		Seleccionador seleccionadorPares = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
 		List<ElementoProcesable> inputImage = getSelectedImages();
 		List<ArrayList<ElementoProcesable>> resultList = new ArrayList<ArrayList<ElementoProcesable>>();
 		resultList.add((ArrayList<ElementoProcesable>) inputImage);
-		for (FiltroPreProcesamiento f : getPreProcessingFilterList()) {
+		for (int i = 0; i < preProcessingFilterList.size(); i++) {
 			ArrayList<FiltroPreProcesamiento> filterList = new ArrayList<FiltroPreProcesamiento>();
-			filterList.add(f);
-			Procesador preProcesador = new PreProcesador(filterList, seleccionadorPares);
+			ArrayList<Seleccionador> seleccionatorList = new ArrayList<Seleccionador>();
+			filterList.add(preProcessingFilterList.get(i));
+			seleccionatorList.add(preProcessingSeleccionatorList.get(i));
+			Procesador preProcesador = new PreProcesador(filterList, seleccionatorList);
 			try {
 				inputImage = preProcesador.procesar(inputImage);
+				resultList.add((ArrayList<ElementoProcesable>) inputImage);
 			} catch (Exception e) {
+				e.printStackTrace();
 				new GUIException(e).inform();
 			}
-			resultList.add((ArrayList<ElementoProcesable>) inputImage);
 		}
 		PreviewFrame previewFrame = new PreviewFrame(resultList);
 		previewFrame.setVisible(true);
 		previewFrame.pack();
 	}
 
-	private List<ElementoProcesable> doPIV() {
-		// DEFINIR DESPUES POR CONFIGURACION
-		Seleccionador seleccionadorCascada = new SeleccionadorCascada(Seleccionador.SELECCIONADOR_SIMPLE);
-		Seleccionador seleccionadorPares = new SeleccionadorPares(Seleccionador.SELECCIONADOR_SIMPLE);
-		List<ElementoProcesable> outputPre = null;
-		List<ElementoProcesable> outputPIV = null;
-		List<ElementoProcesable> outputPost = null;
-
+	private List<ElementoProcesable> doPIV() throws GUIException {
 		try {
+			if (getPivProcessingFilterList().size() == 0)
+				throw new GUIException("Debe existir un filtro PIV");
+
+			// DEFINIR DESPUES POR CONFIGURACION
+			List<ElementoProcesable> outputPre = null;
+			List<ElementoProcesable> outputPIV = null;
+			List<ElementoProcesable> outputPost = null;
 
 			List<ElementoProcesable> inputImage = getSelectedImages();
 
-			Procesador preProcesador = new PreProcesador(getPreProcessingFilterList(), seleccionadorPares);
-			Procesador pivProcesador = new ProcesadorPIV(getPivProcessingFilterList().get(0), seleccionadorCascada);
-			Procesador postProcesador = new PostProcesador(getPostProcessingFilterList(), seleccionadorPares);
+			Procesador preProcesador = new PreProcesador(getPreProcessingFilterList(), preProcessingSeleccionatorList);
+			Procesador pivProcesador = new ProcesadorPIV(getPivProcessingFilterList().get(0), pivProcessingSeleccionatorList.get(0));
+			Procesador postProcesador = new PostProcesador(getPostProcessingFilterList(), postProcessingSeleccionatorList);
 
 			outputPre = preProcesador.procesar(inputImage);
 			outputPIV = pivProcesador.procesar(outputPre);
 			outputPost = postProcesador.procesar(outputPIV);
 
-		} catch (FilterException e) {
-			new GUIException(e).inform();
-		}
+			return outputPost;
 
-		return outputPost;
+		} catch (FilterException | GUIException e) {
+			throw new GUIException(e);
+		}
 
 	}
 

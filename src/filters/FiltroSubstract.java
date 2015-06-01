@@ -20,6 +20,7 @@ public class FiltroSubstract extends FiltroPreProcesamiento {
 	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 		elementosFiltrados.add(ImageJWrapper.substractFilter((Imagen) input.get(0), (Imagen) input.get(1)));
+		elementosFiltrados.add(ImageJWrapper.substractFilter((Imagen) input.get(1), (Imagen) input.get(0)));
 		return elementosFiltrados;
 	}
 

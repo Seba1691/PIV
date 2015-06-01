@@ -5,9 +5,9 @@ import java.util.List;
 
 public class PreProcesador extends Procesador {
 	
-	public PreProcesador(List<FiltroPreProcesamiento> filtros, Seleccionador seleccionador) {
-		super(seleccionador);
+	public PreProcesador(List<FiltroPreProcesamiento> filtros, List<Seleccionador> seleccionadores) {
 		this.filtros = new ArrayList<FiltroProcesable>(filtros);
+		this.seleccionadores = new ArrayList<Seleccionador>(seleccionadores);
 	}
 	
 	public void setFiltros(List<FiltroPreProcesamiento> filtros){
