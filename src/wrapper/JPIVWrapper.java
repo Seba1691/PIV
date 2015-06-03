@@ -42,6 +42,8 @@ public class JPIVWrapper {
 
 			// Setting
 			jpiv2.Settings settings = jpiv.getSettings();
+			settings.pivSequence = jpiv2.Settings.PIV_CONSECUTIVE;
+			
 			settings.pivMultiPass = multiPass;
 			settings.pivWindow = new int[][] { integerToIntArray(interWindowsWidth), integerToIntArray(interWindowsHeight), integerToIntArray(searchDomainWidth), integerToIntArray(searchDomainHeigth), integerToIntArray(horizontalVertorSpacing), integerToIntArray(verticalVertorSpacing) };
 
