@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class FiltersManager {
+public class PluginFilterManager {
 
-	private static FiltersManager instance = null;
+	private static PluginFilterManager instance = null;
 
 	private HashMap<String, String> filtrosPreProcesamiento;
 	private HashMap<String, String> filtrosPIVProcesamiento;
@@ -25,7 +25,7 @@ public class FiltersManager {
 
 	private URLClassLoader filtersClassLoader;
 
-	protected FiltersManager() throws ManagerException {
+	protected PluginFilterManager() throws ManagerException {
 		filtrosPreProcesamiento = new HashMap<>();
 		filtrosPIVProcesamiento = new HashMap<>();
 		filtrosPostProcesamiento = new HashMap<>();
@@ -33,15 +33,15 @@ public class FiltersManager {
 		loadFilters();
 	}
 
-	public static FiltersManager getInstance() throws ManagerException {
+	public static PluginFilterManager getInstance() throws ManagerException {
 		if (instance == null) {
-			instance = new FiltersManager();
+			instance = new PluginFilterManager();
 		}
 		return instance;
 	}
 
 	public static void reloadInstance() throws ManagerException {
-		instance = new FiltersManager();
+		instance = new PluginFilterManager();
 	}
 
 	public HashMap<String, String> getFiltrosPreProcesamiento() {

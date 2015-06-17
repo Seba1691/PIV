@@ -20,8 +20,9 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 
 	public FiltroTestMedianaNormalizada(double umbral, double nivelRuido) {
 		this.cantElementosProcesables = 1;
-		this.umbral = umbral;
-		this.nivelRuido = nivelRuido;
+		parametros = new HashMap<String, Object>();
+		parametros.put(UMBRAL, umbral);
+		parametros.put(NIVEL_RUIDO, nivelRuido);
 	}
 
 	public FiltroTestMedianaNormalizada() {
@@ -31,7 +32,7 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 	@Override
 	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-		elementosFiltrados.add(JPIVWrapper.normalizedMedianTestFilter((MapaVectores) input.get(0), nivelRuido, umbral));
+		elementosFiltrados.add(JPIVWrapper.normalizedMedianTestFilter((MapaVectores) input.get(0), (Integer) parametros.get(NIVEL_RUIDO), (Integer) parametros.get(UMBRAL)));
 		return elementosFiltrados;
 	}
 
@@ -49,28 +50,6 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 
 	public void setNivelRuido(double nivelRuido) {
 		this.nivelRuido = nivelRuido;
-	}
-
-	@Override
-	public HashMap<String, Object> getParametros() {
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(UMBRAL, umbral);
-		parameters.put(NIVEL_RUIDO, nivelRuido);
-		return parameters;
-	}
-
-	@Override
-	public void saveParametros(HashMap<String, Object> parameters) {
-
-		for (String key : parameters.keySet())
-			switch (key) {
-			case UMBRAL:
-				this.umbral = (Integer) parameters.get(key);
-				break;
-			case NIVEL_RUIDO:
-				this.nivelRuido = (Integer) parameters.get(key);
-				break;
-			}
 	}
 
 	@Override

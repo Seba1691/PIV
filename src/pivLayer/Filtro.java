@@ -5,18 +5,19 @@ import java.util.HashMap;
 public abstract class Filtro {
 
 	protected int cantElementosProcesables;
+	protected HashMap<String, Object> parametros;
 
-	public abstract HashMap<String, Object> getParametros();
+	protected abstract void validateParametros(HashMap<String, Object> parameters) throws FilterException;
 
-	public abstract void saveParametros(HashMap<String, Object> parameters);
-
-	public abstract void validateParametros(HashMap<String, Object> parameters) throws FilterException;
-	
 	public void setParametros(HashMap<String, Object> parameters) throws FilterException {
 		validateParametros(parameters);
-		saveParametros(parameters);
+		this.parametros = parameters;
 	}
 	
+	public HashMap<String, Object> getParametros() {
+		return parametros;
+	}
+
 	public int getCantElementosProcesables() {
 		return cantElementosProcesables;
 	}
@@ -25,13 +26,21 @@ public abstract class Filtro {
 		this.cantElementosProcesables = cantElementosProcesables;
 	}
 
+	public HashMap<String, Object> getParameters() {
+		return parametros;
+	}
+
+	public void setParameters(HashMap<String, Object> parameters) {
+		this.parametros = parameters;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		HashMap<String, Object> parameters = getParametros();
 		int result = 1;
 		result = prime * result + cantElementosProcesables;
-		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());;
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
 		return result;
 	}
 

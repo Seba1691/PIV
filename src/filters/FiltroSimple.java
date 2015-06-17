@@ -19,16 +19,6 @@ public class FiltroSimple extends FiltroPreProcesamiento {
 	}
 
 	@Override
-	public HashMap<String, Object> getParametros() {
-		return null;
-	}
-
-	@Override
-	public void saveParametros(HashMap<String, Object> parameters) {
-		// Nothing
-	}
-
-	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// Nothing
 	}

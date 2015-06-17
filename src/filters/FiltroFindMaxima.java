@@ -18,15 +18,12 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 	private static final String OUTPUT_TYPE = "OutputType";
 	private static final String EXCLUDE_EDGES = "ExcludeEdges";
 
-	private int noiseTolerance;
-	private int outputType;
-	private boolean excludeEdges;
-
 	public FiltroFindMaxima(int noiseTolerance, int outputType, boolean excludeEdges) {
 		this.cantElementosProcesables = 1;
-		this.noiseTolerance = noiseTolerance;
-		this.outputType = outputType;
-		this.excludeEdges = excludeEdges;
+		parametros = new HashMap<String, Object>();
+		parametros.put(NOISE_TOLERANCE, noiseTolerance);
+		parametros.put(OUTPUT_TYPE, outputType);
+		parametros.put(EXCLUDE_EDGES, excludeEdges);
 	}
 
 	public FiltroFindMaxima() {
@@ -36,33 +33,8 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 	@Override
 	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-		elementosFiltrados.add(ImageJWrapper.findMaxima((Imagen) input.get(0), noiseTolerance, outputType, excludeEdges));
+		elementosFiltrados.add(ImageJWrapper.findMaxima((Imagen) input.get(0), (Integer) parametros.get(NOISE_TOLERANCE), (Integer) parametros.get(OUTPUT_TYPE), (Boolean) parametros.get(EXCLUDE_EDGES)));
 		return elementosFiltrados;
-	}
-
-	@Override
-	public HashMap<String, Object> getParametros() {
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put(NOISE_TOLERANCE, noiseTolerance);
-		parameters.put(OUTPUT_TYPE, outputType);
-		parameters.put(EXCLUDE_EDGES, excludeEdges);
-		return parameters;
-	}
-
-	@Override
-	public void saveParametros(HashMap<String, Object> parameters) {
-		for (String key : parameters.keySet())
-			switch (key) {
-			case NOISE_TOLERANCE:
-				this.noiseTolerance = (Integer) parameters.get(key);
-				break;
-			case OUTPUT_TYPE:
-				this.outputType = (Integer) parameters.get(key);
-				break;
-			case EXCLUDE_EDGES:
-				this.excludeEdges = (Boolean) parameters.get(key);
-				break;
-			}
 	}
 
 	@Override

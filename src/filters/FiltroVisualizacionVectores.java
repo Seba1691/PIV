@@ -21,16 +21,6 @@ public class FiltroVisualizacionVectores extends FiltroVisualizacion {
 	}
 
 	@Override
-	public HashMap<String, Object> getParametros() {
-		return null;
-	}
-
-	@Override
-	public void saveParametros(HashMap<String, Object> parameters) {
-
-	}
-
-	@Override
 	public void validateParametros(HashMap<String, Object> parameters) throws FilterException {
 		// TODO Auto-generated method stub
 	}

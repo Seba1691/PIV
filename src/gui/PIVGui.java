@@ -44,7 +44,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
-import manager.FiltersManager;
+import manager.PluginFilterManager;
 import manager.ManagerException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -394,7 +394,7 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPreProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPreProcesamiento filtroPreProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
 					filtroPreProcesamiento = ((FiltroPreProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroPreProcesamiento> newRowPanel = new FilterRowPanel<FiltroPreProcesamiento>(filtroPreProcesamiento, new SeleccionadorPares(), filterName, preProcessingFilterList, preProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPreProcessingPanel);
@@ -467,7 +467,7 @@ public class PIVGui {
 					String filterName = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterName();
 					String filterClass = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterClassName();
 					FiltroPIV filtroPIVProcesamiento;
-					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
 					filtroPIVProcesamiento = ((FiltroPIV) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroPIV> newRowPanel = new FilterRowPanel<FiltroPIV>(filtroPIVProcesamiento, new SeleccionadorPares(), filterName, pivProcessingFilterList, pivProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPIVProcessingPanel);
@@ -512,7 +512,7 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPostProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPostProcesamiento filtroPostProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
 					filtroPostProcesamiento = ((FiltroPostProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroPostProcesamiento> newRowPanel = new FilterRowPanel<FiltroPostProcesamiento>(filtroPostProcesamiento, new SeleccionadorPares(), filterName, postProcessingFilterList, postProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPostProcessingPanel);
@@ -557,7 +557,7 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxVisualization.getSelectedItem()).getFilterClassName();
 				FiltroVisualizacion filtroVisualizacion;
 				try {
-					URLClassLoader filtersClassLoader = FiltersManager.getInstance().getFiltersClassLoader();
+					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
 					filtroVisualizacion = ((FiltroVisualizacion) Class.forName(filterClass, true, filtersClassLoader).newInstance());
 					FilterRowPanel<FiltroVisualizacion> newRowPanel = new FilterRowPanel<FiltroVisualizacion>(filtroVisualizacion, null, filterName, visualizationFilterList, null);
 					newRowPanel.insertRowIn(gridVisualizationPanel);
@@ -624,7 +624,7 @@ public class PIVGui {
 	}
 
 	private void loadFilters() throws ManagerException {
-		FiltersManager fm = FiltersManager.getInstance();
+		PluginFilterManager fm = PluginFilterManager.getInstance();
 		HashMap<String, String> preProcessingFilters = fm.getFiltrosPreProcesamiento();
 		HashMap<String, String> pivProcessingFilters = fm.getFiltrosPIVProcesamiento();
 		HashMap<String, String> postProcessingFilters = fm.getFiltrosPostProcesamiento();
@@ -645,7 +645,7 @@ public class PIVGui {
 
 	public static void restatApplication() {
 		try {
-			FiltersManager.reloadInstance();
+			PluginFilterManager.reloadInstance();
 			PIV.dispose();
 			new PIVGui();
 		} catch (ManagerException e) {

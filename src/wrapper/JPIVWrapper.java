@@ -68,7 +68,7 @@ public class JPIVWrapper {
 			settings.exportCorrFunctionNum = exportCorrelationVector;
 			settings.exportCorrFunctionOnlySumOfCorr = onlySumOfCorrelation;
 
-			jpiv.getSettings().jpivLibPath = JPIV_RESOURCES_PATH;
+			settings.jpivLibPath = JPIV_RESOURCES_PATH;
 			PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
 			System.setOut(defaultPrintStream);
 			System.setErr(defaultPrintStream);
