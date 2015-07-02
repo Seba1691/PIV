@@ -38,6 +38,7 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 	public FiltroCorrelacionCruzada(int multiPass, Integer[] interWindowsWidth, Integer[] interWindowsHeight, Integer[] searchDomainWidth, Integer[] searchDomainHeigth, Integer[] horizontalVertorSpacing, Integer[] verticalVertorSpacing, boolean roi, Integer[][] roiMatrix, int horizontalPreShift,
 			int verticalPreShift, boolean normalizedMedianTest, boolean replaceInvalidVectorByMedian, boolean medianFilter, boolean smoothing, boolean deformInterrogationWindows, boolean exportCorrelationFunctions, int exportCorrelationVector, int exportCorrelationPass, boolean onlySumOfCorrelation) {
 		this.cantElementosProcesables = 2;
+		this.cantElementosGenerados = 1;
 		parametros = new LinkedHashMap<String, Object>();
 		parametros.put(MULTI_PASS, multiPass);
 		parametros.put(INTER_WINDOWS_WIDTH, interWindowsWidth);
@@ -65,7 +66,6 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 		this(3, new Integer[] { 64, 32, 32 }, new Integer[] { 64, 32, 32 }, new Integer[] { 32, 8, 8 }, new Integer[] { 32, 8, 8 }, //
 				new Integer[] { 32, 16, 12 }, new Integer[] { 32, 16, 12 }, false, new Integer[][] { { 0, 512 }, { 0, 512 } }, 0, 0, //
 				true, true, false, true, false, false, 0, 0, false);
-		this.cantElementosProcesables = 2;
 	}
 
 	@Override

@@ -14,6 +14,7 @@ public class FiltroSubstract extends FiltroPreProcesamiento {
 
 	public FiltroSubstract() {
 		this.cantElementosProcesables = 2;
+		this.cantElementosGenerados = 2;
 	}
 
 	@Override

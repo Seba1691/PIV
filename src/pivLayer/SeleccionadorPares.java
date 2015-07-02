@@ -6,20 +6,20 @@ import java.util.List;
 public class SeleccionadorPares extends Seleccionador {
 
 	@Override
-	public List<List<ElementoProcesable>> seleccionar(List<ElementoProcesable> input, Filtro filtro) {
-		List<List<ElementoProcesable>> seleccionados = new ArrayList<List<ElementoProcesable>>();
+	public List<ElementoProcesable> seleccionar(Buffer input, Filtro filtro, int i) {
 		int cantElementos = filtro.getCantElementosProcesables();
 
-		for (int i = 0; i < input.size() - cantElementos + 1; i = i + cantElementos) {
-			List<ElementoProcesable> elementos = new ArrayList<ElementoProcesable>();
+		List<ElementoProcesable> elementos = new ArrayList<ElementoProcesable>();
 
-			for (int j = 0; j < cantElementos; j++)
-				elementos.add(input.get(i + j));
+		for (int j = 0; j < cantElementos; j++)
+			elementos.add(input.getElem(j+i*cantElementos));
 
-			seleccionados.add(elementos);
-		}
+		return elementos;
+	}
 
-		return seleccionados;
+	@Override
+	public int cantIteraciones(int inputSize, int cantElementosProcesables) {
+		return inputSize / cantElementosProcesables;
 	}
 
 	@Override

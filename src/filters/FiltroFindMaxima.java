@@ -20,6 +20,7 @@ public class FiltroFindMaxima extends FiltroPreProcesamiento {
 
 	public FiltroFindMaxima(int noiseTolerance, int outputType, boolean excludeEdges) {
 		this.cantElementosProcesables = 1;
+		this.cantElementosGenerados = 1;
 		parametros = new HashMap<String, Object>();
 		parametros.put(NOISE_TOLERANCE, noiseTolerance);
 		parametros.put(OUTPUT_TYPE, outputType);

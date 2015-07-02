@@ -4,7 +4,9 @@ import java.util.List;
 
 public abstract class Seleccionador {
 
-	public abstract List<List<ElementoProcesable>> seleccionar(List<ElementoProcesable> input, Filtro filtro);
+	public abstract List<ElementoProcesable> seleccionar(Buffer input, Filtro filtro, int iteracion);
+	
+	public abstract int cantIteraciones(int inputSize, int cantElemProcesables);
 	
 	@Override
 	public boolean equals(Object obj) {

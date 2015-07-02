@@ -4,8 +4,8 @@
   <class id="1" language="java" name="pivLayer.ElementoProcesable" project="PIV" 
     file="/PIV/src/pivLayer/ElementoProcesable.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="117" width="144" x="43" y="459"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -13,8 +13,8 @@
   <class id="2" language="java" name="pivLayer.FiltroVisualizacion" project="PIV" 
     file="/PIV/src/pivLayer/FiltroVisualizacion.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="99" width="208" x="43" y="320"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -22,8 +22,8 @@
   <class id="3" language="java" name="pivLayer.FiltroPostProcesamiento" project="PIV" 
     file="/PIV/src/pivLayer/FiltroPostProcesamiento.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="594" y="500"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -31,8 +31,8 @@
   <class id="4" language="java" name="pivLayer.FiltroPreProcesamiento" project="PIV" 
     file="/PIV/src/pivLayer/FiltroPreProcesamiento.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="323" y="500"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -40,8 +40,8 @@
   <class id="5" language="java" name="pivLayer.FiltroPIV" project="PIV" file="/PIV/src/pivLayer/FiltroPIV.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="455" y="500"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -49,8 +49,8 @@
   <class id="6" language="java" name="pivLayer.FiltroProcesable" project="PIV" 
     file="/PIV/src/pivLayer/FiltroProcesable.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="99" width="329" x="291" y="320"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -58,8 +58,8 @@
   <class id="7" language="java" name="pivLayer.MapaVectores" project="PIV" file="/PIV/src/pivLayer/MapaVectores.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="171" width="186" x="254" y="616"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -67,8 +67,8 @@
   <class id="8" language="java" name="pivLayer.Imagen" project="PIV" file="/PIV/src/pivLayer/Imagen.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="118" y="701"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
@@ -76,9 +76,9 @@
   <class id="9" language="java" name="pivLayer.Filtro" project="PIV" file="/PIV/src/pivLayer/Filtro.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="279" width="277" x="145" y="-7"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+    <display autosize="true" stereotype="false" package="false" initial-value="true" signature="true" 
+      sort-features="false" accessors="true" visibility="false">      
+      <attributes public="true" package="false" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
@@ -120,7 +120,7 @@
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
-    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <attributes public="true" package="false" protected="true" private="false" static="true"/>    
     <operations public="true" package="true" protected="true" private="true" static="true"/>  
   </classifier-display>  
   <association-display labels="true" multiplicity="true"/>

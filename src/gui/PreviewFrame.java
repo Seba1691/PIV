@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -25,15 +24,15 @@ public class PreviewFrame extends JFrame {
 
 	private JPanel gridPreProcessingPanel;
 
-	public PreviewFrame(List<ArrayList<ElementoProcesable>> resultList) {
+	public PreviewFrame(List<List<ElementoProcesable>> resultList) {
 		setTitle("Previsualizacion Preprocesamiento");
 		initComponent();
 		addGridRows(resultList);
 	}
 
-	private void addGridRows(List<ArrayList<ElementoProcesable>> resultList) {
+	private void addGridRows(List<List<ElementoProcesable>> resultList) {
 		FormLayout layoutRowFilters = (FormLayout) gridPreProcessingPanel.getLayout();
-		for (ArrayList<ElementoProcesable> listImages : resultList) {
+		for (List<ElementoProcesable> listImages : resultList) {
 			int n = layoutRowFilters.getRowCount() + 1;
 			layoutRowFilters.appendRow(RowSpec.decode("165px"));
 			gridPreProcessingPanel.add(getRowPanel(listImages), "1, " + n + ", fill, fill");
@@ -56,7 +55,7 @@ public class PreviewFrame extends JFrame {
 
 	}
 
-	private JPanel getRowPanel(ArrayList<ElementoProcesable> listImages) {
+	private JPanel getRowPanel(List<ElementoProcesable> listImages) {
 		JPanel newRowPreProcessing = new JPanel();
 		newRowPreProcessing.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		newRowPreProcessing.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));

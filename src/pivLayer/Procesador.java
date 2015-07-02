@@ -3,8 +3,6 @@ package pivLayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import cache.CacheManager;
-
 public abstract class Procesador {
 
 	protected List<FiltroProcesable> filtros;
@@ -19,22 +17,57 @@ public abstract class Procesador {
 		this.seleccionadores = seleccionadores;
 	}
 
-	public List<ElementoProcesable> procesar(List<ElementoProcesable> input) throws FilterException {
-		List<ElementoProcesable> result = input;
-		for (int i = 0; i < filtros.size(); i++) {
-			FiltroProcesable filtro = filtros.get(i);
-			List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-			for (List<ElementoProcesable> elementosSeleccionados : seleccionadores.get(i).seleccionar(result, filtro)) {
-				List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
-				if (elementosProcesar == null) {
-					elementosProcesar = filtro.filtrar(elementosSeleccionados);
-					CacheManager.getInstance().add(elementosSeleccionados, filtro, elementosProcesar);
-				}
-				elementosFiltrados.addAll(elementosProcesar);
-			}
-			result = elementosFiltrados;
-		}
-		return result;
+	public Buffer procesar(Buffer input) throws FilterException {
+		List<Buffer> bufferList = procesarList(input);
+		return bufferList.get(bufferList.size()-1);
 	}
+	
+	public List<Buffer> procesarList(Buffer input) throws FilterException {
+		List<Buffer> bufferList = new ArrayList<Buffer>();
+		bufferList.add(input);
+		Buffer inputF = input;
+		Buffer output = null;
+		for (int i = 0; i < filtros.size(); i++) {
+			int cantProcesosFiltro = seleccionadores.get(i).cantIteraciones(input.size(), filtros.get(i).getCantElementosProcesables());
+
+			output = new Buffer(cantProcesosFiltro * filtros.get(i).getCantElementosGenerados());
+			bufferList.add(output);
+			for (int iteracion = 0; iteracion < cantProcesosFiltro; iteracion++) {
+				System.out.println("creado filtro " + i + " Proceso " + iteracion);
+				Proceso p = new Proceso(filtros.get(i), inputF, output, seleccionadores.get(i), iteracion);
+				p.start();
+			}
+
+			inputF = output;
+		}
+		return bufferList;
+	}
+	
+	
+
+	// public List<ElementoProcesable> procesar(List<ElementoProcesable> input)
+	// throws FilterException {
+	// List<ElementoProcesable> result = input;
+	// for (int i = 0; i < filtros.size(); i++) {
+	// FiltroProcesable filtro = filtros.get(i);
+	// List<ElementoProcesable> elementosFiltrados = new
+	// ArrayList<ElementoProcesable>();
+	// for (int iteracion = 0; iteracion <
+	// seleccionadores.get(i).cantIteraciones(input, filtro); iteracion++) {
+	// List<ElementoProcesable> elementosSeleccionados =
+	// seleccionadores.get(i).seleccionar(result, filtro, iteracion);
+	// List<ElementoProcesable> elementosProcesar =
+	// CacheManager.getInstance().get(elementosSeleccionados, filtro);
+	// if (elementosProcesar == null) {
+	// elementosProcesar = filtro.filtrar(elementosSeleccionados);
+	// CacheManager.getInstance().add(elementosSeleccionados, filtro,
+	// elementosProcesar);
+	// }
+	// elementosFiltrados.addAll(elementosProcesar);
+	// }
+	// result = elementosFiltrados;
+	// }
+	// return result;
+	// }
 
 }

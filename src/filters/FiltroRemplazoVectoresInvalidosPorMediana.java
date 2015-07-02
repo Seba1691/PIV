@@ -14,6 +14,7 @@ public class FiltroRemplazoVectoresInvalidosPorMediana extends FiltroPostProcesa
 
 	public FiltroRemplazoVectoresInvalidosPorMediana() {
 		this.cantElementosProcesables = 1;
+		this.cantElementosGenerados = 1;
 	}
 
 	@Override

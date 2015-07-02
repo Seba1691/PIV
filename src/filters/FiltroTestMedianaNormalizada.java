@@ -20,6 +20,7 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 
 	public FiltroTestMedianaNormalizada(double umbral, double nivelRuido) {
 		this.cantElementosProcesables = 1;
+		this.cantElementosGenerados = 1;
 		parametros = new HashMap<String, Object>();
 		parametros.put(UMBRAL, umbral);
 		parametros.put(NIVEL_RUIDO, nivelRuido);

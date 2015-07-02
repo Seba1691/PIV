@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -44,11 +45,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
-import manager.PluginFilterManager;
 import manager.ManagerException;
+import manager.PluginFilterManager;
 
 import org.apache.commons.lang3.StringUtils;
 
+import pivLayer.Buffer;
 import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
 import pivLayer.Filtro;
@@ -72,6 +74,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
+import javax.swing.SwingConstants;
 
 public class PIVGui {
 
@@ -108,6 +111,8 @@ public class PIVGui {
 	private List<FiltroVisualizacion> visualizationFilterList;
 
 	private Integer countVectorMap = 1;
+
+	private JLabel lblLoading;
 
 	/**
 	 * Launch the application.
@@ -192,6 +197,19 @@ public class PIVGui {
 		JSplitPane splitPaneFiles = new JSplitPane();
 		splitPaneFiles.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
+		JPanel panel = new JPanel();
+		PIV.getContentPane().add(panel, BorderLayout.SOUTH);
+		FlowLayout fl_panel = new FlowLayout(FlowLayout.RIGHT, 5, 5);
+		fl_panel.setAlignOnBaseline(true);
+		panel.setLayout(fl_panel);
+
+		lblLoading = new JLabel("Loading... ");
+		ImageIcon loading = new ImageIcon("resources/img/ajax_loader.gif");
+		lblLoading.setIcon(loading);
+		lblLoading.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblLoading.setVisible(false);
+		panel.add(lblLoading);
+
 		// -- MENU --//
 
 		JToolBar toolBar = new JToolBar();
@@ -262,23 +280,13 @@ public class PIVGui {
 		itemDoPIV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					List<ElementoProcesable> results;
+					Buffer results;
 					results = doPIV();
 
 					if (results.size() == 0)
 						return;
 
-					visualizar(results);
-					int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
-					for (ElementoProcesable vectorMap : results) {
-						if (dialogResult == JOptionPane.YES_OPTION) {
-							int resultSave = guardar(vectorMap);
-							if (resultSave == 1)
-								continue;
-						}
-						addVectorList("sinNombre" + countVectorMap, (MapaVectores) vectorMap);
-						countVectorMap++;
-					}
+					procesarResultado(results);
 				} catch (GUIException e) {
 					e.inform();
 				}
@@ -358,9 +366,9 @@ public class PIVGui {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
 				if (evt.getClickCount() == 2) {
-					List<ElementoProcesable> list = new ArrayList<ElementoProcesable>();
-					list.add(vectorList.get(listVectorFiles.getSelectedIndex()));
-					visualizar(list);
+					Buffer buffer = new Buffer(1);
+					buffer.putElem(0, vectorList.get(listVectorFiles.getSelectedIndex()));
+					visualizar(buffer);
 				}
 			}
 		});
@@ -697,39 +705,45 @@ public class PIVGui {
 	}
 
 	private void doPreview() {
-		List<ElementoProcesable> inputImage = getSelectedImages();
-		List<ArrayList<ElementoProcesable>> resultList = new ArrayList<ArrayList<ElementoProcesable>>();
-		resultList.add((ArrayList<ElementoProcesable>) inputImage);
-		for (int i = 0; i < preProcessingFilterList.size(); i++) {
-			ArrayList<FiltroPreProcesamiento> filterList = new ArrayList<FiltroPreProcesamiento>();
-			ArrayList<Seleccionador> seleccionatorList = new ArrayList<Seleccionador>();
-			filterList.add(preProcessingFilterList.get(i));
-			seleccionatorList.add(preProcessingSeleccionatorList.get(i));
-			Procesador preProcesador = new PreProcesador(filterList, seleccionatorList);
-			try {
-				inputImage = preProcesador.procesar(inputImage);
-				resultList.add((ArrayList<ElementoProcesable>) inputImage);
-			} catch (Exception e) {
-				e.printStackTrace();
-				new GUIException(e).inform();
+		new Thread() {
+			public void run() {
+				Buffer inputImage = new Buffer(getSelectedImages());
+
+				Procesador preProcesador = new PreProcesador(getPreProcessingFilterList(), preProcessingSeleccionatorList);
+				List<Buffer> bufferList = new ArrayList<Buffer>();
+				try {
+					bufferList = preProcesador.procesarList(inputImage);
+				} catch (FilterException e) {
+					e.printStackTrace();
+				}
+				List<List<ElementoProcesable>> resultList = new ArrayList<List<ElementoProcesable>>();
+
+				lblLoading.setVisible(true);
+				bufferList.get(bufferList.size() - 1).esperarCompletado();
+				lblLoading.setVisible(false);
+
+				for (Buffer buffer : bufferList)
+					resultList.add((List<ElementoProcesable>) buffer.getBufferList());
+
+				PreviewFrame previewFrame = new PreviewFrame(resultList);
+				previewFrame.setVisible(true);
+				previewFrame.pack();
 			}
-		}
-		PreviewFrame previewFrame = new PreviewFrame(resultList);
-		previewFrame.setVisible(true);
-		previewFrame.pack();
+		}.start();
+
 	}
 
-	private List<ElementoProcesable> doPIV() throws GUIException {
+	private Buffer doPIV() throws GUIException {
 		try {
 			if (getPivProcessingFilterList().size() == 0)
 				throw new GUIException("Debe existir un filtro PIV");
 
 			// DEFINIR DESPUES POR CONFIGURACION
-			List<ElementoProcesable> outputPre = null;
-			List<ElementoProcesable> outputPIV = null;
-			List<ElementoProcesable> outputPost = null;
+			Buffer outputPre = null;
+			Buffer outputPIV = null;
+			Buffer outputPost = null;
 
-			List<ElementoProcesable> inputImage = getSelectedImages();
+			Buffer inputImage = new Buffer(getSelectedImages());
 
 			Procesador preProcesador = new PreProcesador(getPreProcessingFilterList(), preProcessingSeleccionatorList);
 			Procesador pivProcesador = new ProcesadorPIV(getPivProcessingFilterList().get(0), pivProcessingSeleccionatorList.get(0));
@@ -739,6 +753,8 @@ public class PIVGui {
 			outputPIV = pivProcesador.procesar(outputPre);
 			outputPost = postProcesador.procesar(outputPIV);
 
+			// outputPost.isCompleted();
+
 			return outputPost;
 
 		} catch (FilterException | GUIException e) {
@@ -747,10 +763,35 @@ public class PIVGui {
 
 	}
 
-	private void visualizar(List<ElementoProcesable> visualizationList) {
-		for (ElementoProcesable vectorMap : visualizationList)
+	private void procesarResultado(final Buffer resultBuffer) {
+		new Thread() {
+			public void run() {
+				lblLoading.setVisible(true);
+				resultBuffer.esperarCompletado();
+				lblLoading.setVisible(false);
+				visualizar(resultBuffer);
+				guardarResultados(resultBuffer);
+			}
+		}.start();
+	}
+
+	private void visualizar(Buffer visualizationBuffer) {
+		for (ElementoProcesable vectorMap : visualizationBuffer.getBufferList())
 			for (FiltroVisualizacion filter : visualizationFilterList)
 				filter.visualizar(vectorMap);
+	}
+
+	private void guardarResultados(Buffer resultBuffer) {
+		int dialogResult = JOptionPane.showConfirmDialog(null, "¿Desea guardar los resultados?");
+		for (ElementoProcesable vectorMap : resultBuffer.getBufferList()) {
+			if (dialogResult == JOptionPane.YES_OPTION) {
+				int resultSave = guardar(vectorMap);
+				if (resultSave == 1)
+					continue;
+			}
+			addVectorList("sinNombre" + countVectorMap, (MapaVectores) vectorMap);
+			countVectorMap++;
+		}
 	}
 
 	private int guardar(ElementoProcesable vectorMap) {

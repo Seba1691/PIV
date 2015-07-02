@@ -27,14 +27,14 @@ public class CacheManager {
 		return instance;
 	}
 
-	public List<ElementoProcesable> get(List<ElementoProcesable> elementosProcesables, Filtro filter) {
+	public synchronized List<ElementoProcesable> get(List<ElementoProcesable> elementosProcesables, Filtro filter) {
 		CacheEntry entry = new CacheEntry(elementosProcesables, filter);
 		if (recentUsed.remove(entry))
 			recentUsed.add(entry);
 		return cache.get(entry);
 	}
 
-	public void add(List<ElementoProcesable> elementosProcesables, Filtro filter, List<ElementoProcesable> value) {
+	public synchronized void add(List<ElementoProcesable> elementosProcesables, Filtro filter, List<ElementoProcesable> value) {
 		if (recentUsed.size() == CACHE_SIZE) {
 			CacheEntry removeEntry = recentUsed.get(0);
 			recentUsed.remove(0);
