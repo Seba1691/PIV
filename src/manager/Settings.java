@@ -3,6 +3,6 @@ package manager;
 public class Settings {
 
 	// Files
-	public static String filtersPath = System.getProperty("user.dir") + "\\filtros";
+	public static String filtersPath = System.getProperty("user.dir") + "/filtros";
 
 }
