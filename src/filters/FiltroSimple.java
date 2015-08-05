@@ -10,8 +10,7 @@ import pivLayer.FiltroPreProcesamiento;
 public class FiltroSimple extends FiltroPreProcesamiento {
 
 	public FiltroSimple() {
-		this.cantElementosProcesables = 1;
-		this.cantElementosGenerados = 1;
+		super(1, 1);
 	}
 
 	@Override

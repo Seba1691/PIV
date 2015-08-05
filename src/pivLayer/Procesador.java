@@ -8,20 +8,11 @@ public abstract class Procesador {
 	protected List<FiltroProcesable> filtros;
 	protected List<Seleccionador> seleccionadores;
 
-	public Procesador() {
-
-	}
-
-	public Procesador(List<FiltroProcesable> filtros, List<Seleccionador> seleccionadores) {
-		this.filtros = filtros;
-		this.seleccionadores = seleccionadores;
-	}
-
 	public Buffer procesar(Buffer input) throws FilterException {
 		List<Buffer> bufferList = procesarList(input);
-		return bufferList.get(bufferList.size()-1);
+		return bufferList.get(bufferList.size() - 1);
 	}
-	
+
 	public List<Buffer> procesarList(Buffer input) throws FilterException {
 		List<Buffer> bufferList = new ArrayList<Buffer>();
 		bufferList.add(input);
@@ -42,32 +33,5 @@ public abstract class Procesador {
 		}
 		return bufferList;
 	}
-	
-	
-
-	// public List<ElementoProcesable> procesar(List<ElementoProcesable> input)
-	// throws FilterException {
-	// List<ElementoProcesable> result = input;
-	// for (int i = 0; i < filtros.size(); i++) {
-	// FiltroProcesable filtro = filtros.get(i);
-	// List<ElementoProcesable> elementosFiltrados = new
-	// ArrayList<ElementoProcesable>();
-	// for (int iteracion = 0; iteracion <
-	// seleccionadores.get(i).cantIteraciones(input, filtro); iteracion++) {
-	// List<ElementoProcesable> elementosSeleccionados =
-	// seleccionadores.get(i).seleccionar(result, filtro, iteracion);
-	// List<ElementoProcesable> elementosProcesar =
-	// CacheManager.getInstance().get(elementosSeleccionados, filtro);
-	// if (elementosProcesar == null) {
-	// elementosProcesar = filtro.filtrar(elementosSeleccionados);
-	// CacheManager.getInstance().add(elementosSeleccionados, filtro,
-	// elementosProcesar);
-	// }
-	// elementosFiltrados.addAll(elementosProcesar);
-	// }
-	// result = elementosFiltrados;
-	// }
-	// return result;
-	// }
 
 }

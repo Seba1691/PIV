@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Seleccionador {
 
-	public abstract List<ElementoProcesable> seleccionar(Buffer input, Filtro filtro, int iteracion);
+	public abstract List<ElementoProcesable> seleccionar(Buffer input, Filtro filtro, int numeroProceso);
 	
 	public abstract int cantIteraciones(int inputSize, int cantElemProcesables);
 	

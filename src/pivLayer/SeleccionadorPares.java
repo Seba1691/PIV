@@ -6,13 +6,13 @@ import java.util.List;
 public class SeleccionadorPares extends Seleccionador {
 
 	@Override
-	public List<ElementoProcesable> seleccionar(Buffer input, Filtro filtro, int i) {
+	public List<ElementoProcesable> seleccionar(Buffer input, Filtro filtro, int numeroProceso) {
 		int cantElementos = filtro.getCantElementosProcesables();
 
 		List<ElementoProcesable> elementos = new ArrayList<ElementoProcesable>();
 
 		for (int j = 0; j < cantElementos; j++)
-			elementos.add(input.getElem(j+i*cantElementos));
+			elementos.add(input.getElem(j + numeroProceso * cantElementos));
 
 		return elementos;
 	}

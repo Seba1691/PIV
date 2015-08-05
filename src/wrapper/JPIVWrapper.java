@@ -16,7 +16,6 @@ import jpiv2.DisplayVecFrame;
 import jpiv2.FileHandling;
 import jpiv2.JPiv;
 import jpiv2.PivData;
-import main.MainPruebaAdapter;
 import pivLayer.Imagen;
 import pivLayer.MapaVectores;
 
@@ -143,7 +142,7 @@ public class JPIVWrapper {
 
 	public static void visualizar(MapaVectores mapaVectores) throws IOException {
 		String salida = JPIV_RESOURCES_PATH + "/tmp/out" + (int) (Math.random() * 1000000);
-		MainPruebaAdapter.matrixToFile(mapaVectores.getMapaVectores(), salida);
+		matrixToFile(mapaVectores.getMapaVectores(), salida);
 		new DisplayVecFrame(new JPiv(), salida + ".jvc");
 		new File(salida + ".jvc").delete();
 	}
@@ -158,7 +157,6 @@ public class JPIVWrapper {
 	/**
 	 * Traduccion de la informacion
 	 */
-	@SuppressWarnings("unused")
 	private static void matrixToFile(double[][] data, String pathname) throws IOException {
 		DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
 		df.applyPattern("+0.0000E00;-0.0000E00");

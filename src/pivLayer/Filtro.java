@@ -7,13 +7,17 @@ public abstract class Filtro {
 	protected int cantElementosProcesables;
 	protected HashMap<String, Object> parametros;
 
+	protected Filtro(int cantElementosProcesables) {
+		this.cantElementosProcesables = cantElementosProcesables;
+	}
+
 	protected abstract void validateParametros(HashMap<String, Object> parameters) throws FilterException;
 
 	public void setParametros(HashMap<String, Object> parameters) throws FilterException {
 		validateParametros(parameters);
 		this.parametros = parameters;
 	}
-	
+
 	public HashMap<String, Object> getParametros() {
 		return parametros;
 	}
@@ -24,14 +28,6 @@ public abstract class Filtro {
 
 	public void setCantElementosProcesables(int cantElementosProcesables) {
 		this.cantElementosProcesables = cantElementosProcesables;
-	}
-
-	public HashMap<String, Object> getParameters() {
-		return parametros;
-	}
-
-	public void setParameters(HashMap<String, Object> parameters) {
-		this.parametros = parameters;
 	}
 
 	@Override

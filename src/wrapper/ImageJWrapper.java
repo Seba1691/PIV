@@ -18,17 +18,18 @@ public class ImageJWrapper {
 	}
 
 	public static Imagen autoLocalThreshold(Imagen imagen1, String metodo, int radio, double parametro1, double parametro2, boolean fondoBlanco) {
+		//Clases y metodos correspondientes a la herramienta extendida
 		ImagePlus imp1 = new ImagePlus("", imagen1.getImage());
 		Auto_Local_Threshold a = new Auto_Local_Threshold();
 		a.exec(imp1, metodo, radio, parametro1, parametro2, fondoBlanco);
 		return new Imagen(imp1.getBufferedImage());
 	}
 
-	public static Imagen findMaxima(Imagen imagen1, int noiseTolerance, int outputType, boolean excludeEdges) {
+	public static Imagen findMaxima(Imagen imagen1, int noiseTolerance,boolean excludeEdges) {
 		ImagePlus imp1 = new ImagePlus("", imagen1.getImage());
 		ImageProcessor ip = imp1.getProcessor();
 		MaximumFinder mf = new MaximumFinder();
-		ImagePlus imp2 = new ImagePlus("", mf.findMaxima(ip, noiseTolerance, outputType, excludeEdges));
+		ImagePlus imp2 = new ImagePlus("", mf.findMaxima(ip, noiseTolerance, 1, excludeEdges));
 		return new Imagen(imp2.getBufferedImage());
 	}
 

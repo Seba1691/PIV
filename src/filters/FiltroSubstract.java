@@ -13,8 +13,7 @@ import wrapper.ImageJWrapper;
 public class FiltroSubstract extends FiltroPreProcesamiento {
 
 	public FiltroSubstract() {
-		this.cantElementosProcesables = 2;
-		this.cantElementosGenerados = 2;
+		super(2, 2);
 	}
 
 	@Override

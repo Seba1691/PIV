@@ -11,6 +11,10 @@ import wrapper.JPIVWrapper;
 
 public class FiltroVisualizacionVectores extends FiltroVisualizacion {
 
+	public FiltroVisualizacionVectores() {
+		super(1);
+	}
+
 	@Override
 	public void visualizar(ElementoProcesable input) {
 		try {

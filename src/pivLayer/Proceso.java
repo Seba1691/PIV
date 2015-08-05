@@ -10,19 +10,19 @@ public class Proceso extends Thread {
 	private Buffer output;
 	private FiltroProcesable filtro;
 	private Seleccionador seleccionador;
-	private int iteracion;
+	private int numeroProceso;
 	
 	public Proceso(FiltroProcesable filtroProcesable, Buffer input, Buffer output, Seleccionador seleccionador, int iteracion) {
 		this.filtro = filtroProcesable;
 		this.input = input;
 		this.output = output;
-		this.iteracion = iteracion;
+		this.numeroProceso = iteracion;
 		this.seleccionador = seleccionador;
 	}
 
 	@Override
 	public void run(){	
-		List<ElementoProcesable> elementosSeleccionados = seleccionador.seleccionar(input, filtro, iteracion);
+		List<ElementoProcesable> elementosSeleccionados = seleccionador.seleccionar(input, filtro, numeroProceso);
 		List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
 		if (elementosProcesar == null) {
 			try {
@@ -34,26 +34,7 @@ public class Proceso extends Thread {
 		}
 		for (int i = 0; i<elementosProcesar.size(); i++){
 			ElementoProcesable elementoProcesado = elementosProcesar.get(i);
-			output.putElem(iteracion*filtro.getCantElementosGenerados()+i,elementoProcesado);		
+			output.putElem(numeroProceso*filtro.getCantElementosGenerados()+i,elementoProcesado);		
 		}
-	}	
-//		while (!input.cerrado() || input.size() >= filtro.cantElementosProcesables);  
-//			List<ElementoProcesable> elementosSeleccionados = seleccionador.seleccionar(input, filtro))
-//			List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
-//			if (elementosProcesar == null) {
-//				elementosProcesar = filtro.filtrar(elementosSeleccionados);
-//				CacheManager.getInstance().add(elementosSeleccionados, filtro, elementosProcesar);
-//			}
-//			output.add(elementosProcesar);
-//		}
-//		output.cerrar();
-	
-	
-//	List<ElementoProcesable> elementosSeleccionados = seleccionador.seleccionar(input, filtro, iteracion);
-//	List<ElementoProcesable> elementosProcesar = CacheManager.getInstance().get(elementosSeleccionados, filtro);
-//	if (elementosProcesar == null) {
-//		elementosProcesar = filtro.filtrar(elementosSeleccionados);
-//		CacheManager.getInstance().add(elementosSeleccionados, filtro, elementosProcesar);
-//	}
-//	output.putElem(valor);
+	}
 }

@@ -7,7 +7,7 @@ public class GUIException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public GUIException(Exception e) {
-		super(e);
+		super(e.getMessage(),e);
 	}
 
 	public GUIException(String cause, Exception e) {
@@ -19,7 +19,8 @@ public class GUIException extends Exception {
 	}
 
 	public void inform() {
-		JOptionPane.showMessageDialog(null, getCause().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		printStackTrace();
 	}
 
 }

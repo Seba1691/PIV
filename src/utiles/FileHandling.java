@@ -4,12 +4,16 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StreamTokenizer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 
@@ -115,5 +119,16 @@ public class FileHandling {
 			throw new FileHandlingException("Ha ocurrido un error al guardar la imagen en un archivo", e);
 		}
 	}
+	
+	public static InputStream getInputStreamFromZip(File zip, String entry) throws IOException {
+		ZipInputStream zin = new ZipInputStream(new FileInputStream(zip));
+		for (ZipEntry e; (e = zin.getNextEntry()) != null;) {
+			if (e.getName().equals(entry)) {
+				return zin;
+			}
+		}
+		return null;
+	}
+	
 
 }

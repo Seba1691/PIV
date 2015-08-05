@@ -14,7 +14,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLClassLoader;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -41,6 +40,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
@@ -74,7 +74,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
-import javax.swing.SwingConstants;
 
 public class PIVGui {
 
@@ -402,12 +401,9 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPreProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPreProcesamiento filtroPreProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
-					filtroPreProcesamiento = ((FiltroPreProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
+					filtroPreProcesamiento = ((FiltroPreProcesamiento) PluginFilterManager.getInstance().getFilterInstance(filterClass));
 					FilterRowPanel<FiltroPreProcesamiento> newRowPanel = new FilterRowPanel<FiltroPreProcesamiento>(filtroPreProcesamiento, new SeleccionadorPares(), filterName, preProcessingFilterList, preProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPreProcessingPanel);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException e) {
 					new GUIException(e).inform();
 				}
@@ -475,12 +471,9 @@ public class PIVGui {
 					String filterName = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterName();
 					String filterClass = ((ComboItemFilter) comboBoxPIVProcessing.getSelectedItem()).getFilterClassName();
 					FiltroPIV filtroPIVProcesamiento;
-					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
-					filtroPIVProcesamiento = ((FiltroPIV) Class.forName(filterClass, true, filtersClassLoader).newInstance());
+					filtroPIVProcesamiento = ((FiltroPIV) PluginFilterManager.getInstance().getFilterInstance(filterClass));
 					FilterRowPanel<FiltroPIV> newRowPanel = new FilterRowPanel<FiltroPIV>(filtroPIVProcesamiento, new SeleccionadorPares(), filterName, pivProcessingFilterList, pivProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPIVProcessingPanel);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException | GUIException e) {
 					new GUIException(e).inform();
 				}
@@ -520,12 +513,9 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxPostProcessing.getSelectedItem()).getFilterClassName();
 				FiltroPostProcesamiento filtroPostProcesamiento;
 				try {
-					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
-					filtroPostProcesamiento = ((FiltroPostProcesamiento) Class.forName(filterClass, true, filtersClassLoader).newInstance());
+					filtroPostProcesamiento = ((FiltroPostProcesamiento) PluginFilterManager.getInstance().getFilterInstance(filterClass));
 					FilterRowPanel<FiltroPostProcesamiento> newRowPanel = new FilterRowPanel<FiltroPostProcesamiento>(filtroPostProcesamiento, new SeleccionadorPares(), filterName, postProcessingFilterList, postProcessingSeleccionatorList);
 					newRowPanel.insertRowIn(gridPostProcessingPanel);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException e) {
 					new GUIException(e).inform();
 				}
@@ -565,12 +555,9 @@ public class PIVGui {
 				String filterClass = ((ComboItemFilter) comboBoxVisualization.getSelectedItem()).getFilterClassName();
 				FiltroVisualizacion filtroVisualizacion;
 				try {
-					URLClassLoader filtersClassLoader = PluginFilterManager.getInstance().getFiltersClassLoader();
-					filtroVisualizacion = ((FiltroVisualizacion) Class.forName(filterClass, true, filtersClassLoader).newInstance());
+					filtroVisualizacion = ((FiltroVisualizacion) PluginFilterManager.getInstance().getFilterInstance(filterClass));
 					FilterRowPanel<FiltroVisualizacion> newRowPanel = new FilterRowPanel<FiltroVisualizacion>(filtroVisualizacion, null, filterName, visualizationFilterList, null);
 					newRowPanel.insertRowIn(gridVisualizationPanel);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					new GUIException("Error al crear el filtro seleccionado", e).inform();
 				} catch (ManagerException e) {
 					new GUIException(e).inform();
 				}

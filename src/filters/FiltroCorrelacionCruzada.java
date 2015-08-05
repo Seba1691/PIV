@@ -37,8 +37,7 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 
 	public FiltroCorrelacionCruzada(int multiPass, Integer[] interWindowsWidth, Integer[] interWindowsHeight, Integer[] searchDomainWidth, Integer[] searchDomainHeigth, Integer[] horizontalVertorSpacing, Integer[] verticalVertorSpacing, boolean roi, Integer[][] roiMatrix, int horizontalPreShift,
 			int verticalPreShift, boolean normalizedMedianTest, boolean replaceInvalidVectorByMedian, boolean medianFilter, boolean smoothing, boolean deformInterrogationWindows, boolean exportCorrelationFunctions, int exportCorrelationVector, int exportCorrelationPass, boolean onlySumOfCorrelation) {
-		this.cantElementosProcesables = 2;
-		this.cantElementosGenerados = 1;
+		super(2, 1);
 		parametros = new LinkedHashMap<String, Object>();
 		parametros.put(MULTI_PASS, multiPass);
 		parametros.put(INTER_WINDOWS_WIDTH, interWindowsWidth);
@@ -104,7 +103,6 @@ public class FiltroCorrelacionCruzada extends FiltroPIV {
 			throw new FilterException("El parametro " + ROI_MATRIX + " debe ser una matriz de 2x2");
 		if (((Integer[][]) parameters.get(ROI_MATRIX))[1].length != 2)
 			throw new FilterException("El parametro " + ROI_MATRIX + " debe ser una matriz de 2x2");
-
 	}
 
 }

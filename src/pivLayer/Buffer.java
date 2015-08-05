@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Buffer {
-
-	// private List<ElementoProcesable> buffer;
+	
 	private ElementoProcesable[] buffer;
 
 	public Buffer(int size) {
@@ -18,7 +17,6 @@ public class Buffer {
 	}
 
 	public synchronized ElementoProcesable getElem(int index) {
-		System.out.println("Get");
 		while (buffer[index] == null) {
 			try {
 				wait();
@@ -29,7 +27,6 @@ public class Buffer {
 	}
 
 	public synchronized void putElem(int index, ElementoProcesable elem) {
-		System.out.println("Escribir");
 		buffer[index] = elem;
 		notifyAll();
 	}

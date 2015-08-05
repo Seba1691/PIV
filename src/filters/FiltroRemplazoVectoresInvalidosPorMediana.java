@@ -13,8 +13,7 @@ import wrapper.JPIVWrapper;
 public class FiltroRemplazoVectoresInvalidosPorMediana extends FiltroPostProcesamiento {
 
 	public FiltroRemplazoVectoresInvalidosPorMediana() {
-		this.cantElementosProcesables = 1;
-		this.cantElementosGenerados = 1;
+		super(1, 1);
 	}
 
 	@Override

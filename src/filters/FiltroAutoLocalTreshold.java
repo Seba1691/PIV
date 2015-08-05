@@ -21,8 +21,7 @@ public class FiltroAutoLocalTreshold extends FiltroPreProcesamiento {
 	private static final String FONDO_BLANCO = "FondoBlanco";
 
 	public FiltroAutoLocalTreshold(String metodo, int radio, double parametro1, double parametro2, boolean fondoBlanco) {
-		this.cantElementosProcesables = 1;
-		this.cantElementosGenerados = 1;
+		super(1, 1);
 		parametros = new HashMap<String, Object>();
 		parametros.put(METODO, metodo);
 		parametros.put(RADIO, radio);
