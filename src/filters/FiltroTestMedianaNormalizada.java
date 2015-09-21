@@ -15,9 +15,6 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 	private static final String UMBRAL = "Umbral";
 	private static final String NIVEL_RUIDO = "NivelRuido";
 
-	private double umbral;
-	private double nivelRuido;
-
 	public FiltroTestMedianaNormalizada(double umbral, double nivelRuido) {
 		super(1, 1);
 		parametros = new HashMap<String, Object>();
@@ -34,22 +31,6 @@ public class FiltroTestMedianaNormalizada extends FiltroPostProcesamiento {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
 		elementosFiltrados.add(JPIVWrapper.normalizedMedianTestFilter((MapaVectores) input.get(0), (Double) parametros.get(NIVEL_RUIDO), (Double) parametros.get(UMBRAL)));
 		return elementosFiltrados;
-	}
-
-	public double getUmbral() {
-		return umbral;
-	}
-
-	public void setUmbral(double umbral) {
-		this.umbral = umbral;
-	}
-
-	public double getNivelRuido() {
-		return nivelRuido;
-	}
-
-	public void setNivelRuido(double nivelRuido) {
-		this.nivelRuido = nivelRuido;
 	}
 
 	@Override

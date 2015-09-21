@@ -7,17 +7,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.DecimalFormat;
-import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
 import jpiv2.DisplayVecFrame;
-import jpiv2.FileHandling;
 import jpiv2.JPiv;
 import jpiv2.PivData;
 import pivLayer.Imagen;
 import pivLayer.MapaVectores;
+import utiles.FileHandling;
+import utiles.FileHandlingException;
 
 public class JPIVWrapper {
 
@@ -50,7 +49,7 @@ public class JPIVWrapper {
 			settings.pivROIP1x = roiMatrix[0][0];
 			settings.pivROIP2x = roiMatrix[0][1];
 			settings.pivROIP1y = roiMatrix[1][0];
-			settings.pivROIP2x = roiMatrix[1][1];
+			settings.pivROIP2y = roiMatrix[1][1];
 
 			settings.pivHorPreShift = horizontalPreShift;
 			settings.pivVerPreShift = verticalPreShift;
@@ -92,7 +91,7 @@ public class JPIVWrapper {
 
 			return result;
 
-		} catch (IOException e) {
+		} catch (IOException | FileHandlingException e) {
 			throw new WrapperException("Ocurrio un error ejecutando invocando a la aplicacion JPIV", e);
 		}
 	}
@@ -136,13 +135,13 @@ public class JPIVWrapper {
 		return new MapaVectores(pivData.getPivData());
 	}
 
-	private static double[][] fileToMatrix(String filePath) throws FileNotFoundException, IOException {
-		return FileHandling.readArrayFromFile(filePath);
+	private static double[][] fileToMatrix(String filePath) throws FileNotFoundException, IOException, FileHandlingException {
+		return utiles.FileHandling.readArrayFromFile(filePath);
 	}
 
 	public static void visualizar(MapaVectores mapaVectores) throws IOException {
 		String salida = JPIV_RESOURCES_PATH + "/tmp/out" + (int) (Math.random() * 1000000);
-		matrixToFile(mapaVectores.getMapaVectores(), salida);
+		FileHandling.writeArrayToFile(mapaVectores.getMapaVectores(), salida);
 		new DisplayVecFrame(new JPiv(), salida + ".jvc");
 		new File(salida + ".jvc").delete();
 	}
@@ -152,15 +151,6 @@ public class JPIVWrapper {
 		for (int i = 0; i < array.length; i++)
 			result[i] = array[i];
 		return result;
-	}
-
-	/**
-	 * Traduccion de la informacion
-	 */
-	private static void matrixToFile(double[][] data, String pathname) throws IOException {
-		DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
-		df.applyPattern("+0.0000E00;-0.0000E00");
-		FileHandling.writeArrayToFile(data, pathname + ".jvc", df, "");
 	}
 
 }

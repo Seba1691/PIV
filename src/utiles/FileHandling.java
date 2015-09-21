@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.StreamTokenizer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -29,6 +30,12 @@ public class FileHandling {
 		}
 		file.flush();
 		file.close();
+	}
+	
+	public static void writeArrayToFile(double[][] data, String pathname) throws IOException {
+		DecimalFormat df = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+		df.applyPattern("+0.0000E00;-0.0000E00");
+		writeArrayToFile(data, pathname + ".jvc", df);
 	}
 
 	public static double[][] readArrayFromFile(String pathname) throws FileHandlingException {
