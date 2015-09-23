@@ -2,6 +2,7 @@ package gui;
 
 import gui.renderers.MatrixIntegerCellRenderer;
 import gui.renderers.MatrixStringCellRenderer;
+import gui.renderers.VectorDoubleCellRenderer;
 import gui.renderers.VectorIntegerCellRenderer;
 import gui.renderers.VectorStringCellRenderer;
 
@@ -62,6 +63,7 @@ public class FilterConfiguratonTable extends JTable {
 		editors = new HashMap<Class<?>, DefaultCellEditor>();
 		editors.put(Integer[].class, new VectorIntegerCellRenderer(new JTextField()));
 		editors.put(String[].class, new VectorStringCellRenderer(new JTextField()));
+		editors.put(Double[].class, new VectorDoubleCellRenderer(new JTextField()));
 		editors.put(Integer[][].class, new MatrixIntegerCellRenderer(new JTextField()));
 		editors.put(String[][].class, new MatrixStringCellRenderer(new JTextField()));
 
@@ -71,6 +73,7 @@ public class FilterConfiguratonTable extends JTable {
 		renderers = new HashMap<Class<?>, TableCellRenderer>();
 		renderers.put(Integer[].class, new VectorIntegerCellRenderer(new JTextField()));
 		renderers.put(String[].class, new VectorStringCellRenderer(new JTextField()));
+		renderers.put(Double[].class, new VectorDoubleCellRenderer(new JTextField()));
 		renderers.put(Integer[][].class, new MatrixIntegerCellRenderer(new JTextField()));
 		renderers.put(String[][].class, new MatrixStringCellRenderer(new JTextField()));
 	}

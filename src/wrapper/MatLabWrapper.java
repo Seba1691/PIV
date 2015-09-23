@@ -1,8 +1,13 @@
 package wrapper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import manager.Constants;
 import matpiv.Core;
 import pivLayer.Imagen;
 import pivLayer.MapaVectores;
@@ -14,22 +19,39 @@ import com.mathworks.toolbox.javabuilder.MWStructArray;
 
 public class MatLabWrapper {
 
-	public static MapaVectores CorrealcionCruzadaSimple(Imagen image1, Imagen image2, Double windowSize, Double arg1, Double arg2) {
+	public static MapaVectores CorrealcionCruzada(Imagen image1, Imagen image2, Object windowSize, Double overlap, String metodo, int numPass) {
+		String path = Constants.TMP_RESOURCES_PATH;
+		int rnd = (int) (Math.random() * 1000000);
+		String input1 = path + "in" + rnd + ".png";
+		String input2 = path + "in" + (int) (rnd + 1) + ".png";
+
+		File fileInput1 = new File(input1);
+		File fileInput2 = new File(input2);
+		
 		try {
 			Core core = new Core();
+			
+			ImageIO.write(image1.getImage(), "png", fileInput1);
+			ImageIO.write(image2.getImage(), "png", fileInput2);
 
-			Object[] in = { "Img1_CLAHEc.png", "Img2_CLAHEc.png", new Double[][] { new Double[] { 64.0, 64.0 } }, (Double) 1.0, (Double) 0.5, "multin" };
+			//Object[] in = { input1, input2, new Double[][] { new Double[] { 64.0, 64.0 }, new Double[] {32,32} }, (Double) 1.0, (Double) 0.5, "multin" };
+			
+			Object[] in = { input1, input2, windowSize, (Double) 1.0, overlap, metodo };
+			
 			Object[] out = new Object[4];
 			out = core.matpiv(1, in);
 			MWArray x = ((MWStructArray) out[0]).getField(1);
 			MWArray y = ((MWStructArray) out[0]).getField(2);
 			MWArray ux = ((MWStructArray) out[0]).getField(3);
-			MWArray uy = ((MWStructArray) out[0]).getField(4);
+			MWArray uy = ((MWStructArray) out[0]).getField(4);					
 
-			return mWArraysMultiToMapaVectores(x, y, ux, uy, 3);
+			return mWArraysMultiToMapaVectores(x, y, ux, uy, numPass);
 
-		} catch (MWException e) {
+		} catch (MWException | IOException e) {
 			e.printStackTrace();
+		} finally {
+			fileInput1.delete();
+			fileInput2.delete();
 		}
 		return null;
 	}

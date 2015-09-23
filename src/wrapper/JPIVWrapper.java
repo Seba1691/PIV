@@ -10,6 +10,7 @@ import java.io.PrintStream;
 
 import javax.imageio.ImageIO;
 
+import manager.Constants;
 import jpiv2.DisplayVecFrame;
 import jpiv2.JPiv;
 import jpiv2.PivData;
@@ -20,13 +21,13 @@ import utiles.FileHandlingException;
 
 public class JPIVWrapper {
 
-	private static final String JPIV_RESOURCES_PATH = System.getProperty("user.dir") + "/resources/jpivlib";
+	private static final String JPIV_RESOURCES_PATH = Constants.RESOURCES_PATH + "pivlib";
 
 	public static MapaVectores doPiv(Imagen image1, Imagen image2, int multiPass, Integer[] interWindowsWidth, Integer[] interWindowsHeight, Integer[] searchDomainWidth, Integer[] searchDomainHeigth, Integer[] horizontalVertorSpacing, Integer[] verticalVertorSpacing, //
 			boolean roi, Integer[][] roiMatrix, int horizontalPreShift, int verticalPreShift, boolean normalizedMedianTest, boolean replaceInvalidVectorByMedian, boolean medianFilter, boolean smoothing, //
 			boolean deformInterrogationWindows, boolean exportCorrelationFunctions, int exportCorrelationVector, int exportCorrelationPass, boolean onlySumOfCorrelation) throws WrapperException {
 		try {
-			String path = JPIV_RESOURCES_PATH + "/tmp/";
+			String path = Constants.TMP_RESOURCES_PATH;
 			int rnd = (int) (Math.random() * 1000000);
 			String input1 = path + "in" + rnd + ".png";
 			String input2 = path + "in" + (int) (rnd + 1) + ".png";
@@ -41,7 +42,7 @@ public class JPIVWrapper {
 			// Setting
 			jpiv2.Settings settings = jpiv.getSettings();
 			settings.pivSequence = jpiv2.Settings.PIV_CONSECUTIVE;
-			
+
 			settings.pivMultiPass = multiPass;
 			settings.pivWindow = new int[][] { integerToIntArray(interWindowsWidth), integerToIntArray(interWindowsHeight), integerToIntArray(searchDomainWidth), integerToIntArray(searchDomainHeigth), integerToIntArray(horizontalVertorSpacing), integerToIntArray(verticalVertorSpacing) };
 
@@ -86,8 +87,8 @@ public class JPIVWrapper {
 			System.gc();
 
 			new File(salida + "1.jvc").delete();
-			System.out.println(fileInput1.delete());
-			System.out.println(fileInput2.delete());
+			fileInput1.delete();
+			fileInput2.delete();
 
 			return result;
 
@@ -140,7 +141,7 @@ public class JPIVWrapper {
 	}
 
 	public static void visualizar(MapaVectores mapaVectores) throws IOException {
-		String salida = JPIV_RESOURCES_PATH + "/tmp/out" + (int) (Math.random() * 1000000);
+		String salida = Constants.TMP_RESOURCES_PATH + "out" + (int) (Math.random() * 1000000);
 		FileHandling.writeArrayToFile(mapaVectores.getMapaVectores(), salida);
 		new DisplayVecFrame(new JPiv(), salida + ".jvc");
 		new File(salida + ".jvc").delete();

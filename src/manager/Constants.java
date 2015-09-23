@@ -10,5 +10,10 @@ public interface Constants {
 
 	// Files
 	public static final String fileConfig = "filters.config";
+	
+	//Resources
+	public static final String RESOURCES_PATH = System.getProperty("user.dir") + "/resources/";
+	public static final String TMP_RESOURCES_PATH = RESOURCES_PATH+"tmp/";
+	public static final String IMG_RESOURCES_PATH = RESOURCES_PATH+"img/";
 
 }

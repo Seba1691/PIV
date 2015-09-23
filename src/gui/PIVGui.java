@@ -45,6 +45,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
+import manager.Constants;
 import manager.ManagerException;
 import manager.PluginFilterManager;
 
@@ -202,8 +203,8 @@ public class PIVGui {
 		fl_panel.setAlignOnBaseline(true);
 		panel.setLayout(fl_panel);
 
-		lblLoading = new JLabel("Loading... ");
-		ImageIcon loading = new ImageIcon("resources/img/ajax_loader.gif");
+		lblLoading = new JLabel("Procesando... ");
+		ImageIcon loading = new ImageIcon(Constants.IMG_RESOURCES_PATH + "ajax_loader.gif");
 		lblLoading.setIcon(loading);
 		lblLoading.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLoading.setVisible(false);
