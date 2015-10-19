@@ -144,6 +144,9 @@ public class JPIVWrapper {
 		String salida = Constants.TMP_RESOURCES_PATH + "out" + (int) (Math.random() * 1000000);
 		FileHandling.writeArrayToFile(mapaVectores.getMapaVectores(), salida);
 		new DisplayVecFrame(new JPiv(), salida + ".jvc");
+		PrintStream defaultPrintStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out), 128), true);
+		System.setOut(defaultPrintStream);
+		System.setErr(defaultPrintStream);
 		new File(salida + ".jvc").delete();
 	}
 

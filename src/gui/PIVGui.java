@@ -45,16 +45,19 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+
+import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
 import manager.Constants;
 import manager.ManagerException;
 import manager.PluginFilterManager;
-
-import org.apache.commons.lang3.StringUtils;
-
 import pivLayer.Buffer;
 import pivLayer.ElementoProcesable;
 import pivLayer.FilterException;
-import pivLayer.Filtro;
 import pivLayer.FiltroPIV;
 import pivLayer.FiltroPostProcesamiento;
 import pivLayer.FiltroPreProcesamiento;
@@ -70,13 +73,7 @@ import pivLayer.SeleccionadorPares;
 import utiles.FileHandling;
 import utiles.FileHandlingException;
 
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
-
-import de.javasoft.plaf.synthetica.SyntheticaAluOxideLookAndFeel;
-
-public class PIVGui {
+class PIVGui {
 
 	private static JFrame PIV;
 
@@ -574,36 +571,6 @@ public class PIVGui {
 		scrollPaneSelectedVisualizationFilters.setViewportView(gridVisualizationPanel);
 		FormLayout fl_gridVisualizationPanel = new FormLayout(new ColumnSpec[] { ColumnSpec.decode("0px:grow"), }, new RowSpec[] {});
 		gridVisualizationPanel.setLayout(fl_gridVisualizationPanel);
-
-		JPanel panelBoludeces = new JPanel();
-		panelBoludeces.setToolTipText("Boludeces");
-		tabbedPaneProcessing.addTab("Boludeces", null, panelBoludeces, null);
-
-		JButton btnNewButton = new JButton("New button");
-		panelBoludeces.add(btnNewButton);
-
-		JButton btnMostrarlistas = new JButton("MostrarListas");
-		btnMostrarlistas.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				for (Filtro f : preProcessingFilterList) {
-					System.out.println(f.getClass().getName());
-				}
-
-				for (Filtro f : pivProcessingFilterList) {
-					System.out.println(f.getClass().getName());
-				}
-
-				for (Filtro f : postProcessingFilterList) {
-					System.out.println(f.getClass().getName());
-				}
-			}
-		});
-		panelBoludeces.add(btnMostrarlistas);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog((JButton) arg0.getSource(), "asdasdasdasdasdasd", "Error de Parametro", JOptionPane.ERROR_MESSAGE);
-			}
-		});
 
 	}
 

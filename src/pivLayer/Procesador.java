@@ -1,9 +1,11 @@
 package pivLayer;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
-public abstract class Procesador {
+
+public abstract class Procesador{
 
 	protected List<FiltroProcesable> filtros;
 	protected List<Seleccionador> seleccionadores;
@@ -32,6 +34,6 @@ public abstract class Procesador {
 			inputF = output;
 		}
 		return bufferList;
-	}
+	}	
 
 }

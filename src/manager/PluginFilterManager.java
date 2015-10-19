@@ -104,7 +104,7 @@ public class PluginFilterManager {
 	public Filtro getFilterInstance(String filterClass) throws ManagerException {
 		try {
 			URLClassLoader filtersClassLoader = getFiltersClassLoader();
-			return ((Filtro) Class.forName(filterClass, true, filtersClassLoader).newInstance());
+			return (Filtro) Class.forName(filterClass, true, filtersClassLoader).newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			throw new ManagerException("Error al cargar los filtros desde " + Settings.filtersPath, e);
 		}

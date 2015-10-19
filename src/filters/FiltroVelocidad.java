@@ -17,7 +17,7 @@ public class FiltroVelocidad extends FiltroPostProcesamiento {
 	private static final String TAMANO_PIXEL = "TamañoPixel";
 
 	public FiltroVelocidad() {
-		this(1, 1);
+		this(0.083, 0.000074);
 	}
 
 	public FiltroVelocidad(double tiempo, double tamanoPixel) {

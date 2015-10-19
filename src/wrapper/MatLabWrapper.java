@@ -94,6 +94,25 @@ public class MatLabWrapper {
 		return null;
 
 	}
+	
+	public static MapaVectores nanInterpolationFilter(MapaVectores mapa) {
+		try {
+			Core core = new Core();
+			List<double[][]> matlabArray = mapaVectoresToMWArrays(mapa);
+			Object[] out = new Object[2];
+			out = core.naninterp(2, new Object[] {matlabArray.get(2), matlabArray.get(3),"linear", matlabArray.get(0), matlabArray.get(1)});
+
+			MWArray ux = ((MWNumericArray)out[0]);
+			MWArray uy =((MWNumericArray) out[1]);
+
+			return mWArraysMultiToMapaVectores(matlabArray.get(0), matlabArray.get(1), ux, uy, 1);
+
+		} catch (MWException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
 
 	public static void visualizarStreamlines(MapaVectores mapa) {
 		try {

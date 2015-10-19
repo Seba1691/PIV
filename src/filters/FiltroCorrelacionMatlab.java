@@ -34,10 +34,10 @@ public class FiltroCorrelacionMatlab extends FiltroPIV {
 	@Override
 	public List<ElementoProcesable> filtrar(List<ElementoProcesable> input) throws FilterException {
 		List<ElementoProcesable> elementosFiltrados = new ArrayList<ElementoProcesable>();
-		if ((boolean) parametros.get(MULTI_PASS)) {
-			Double[][] windowsSize = new Double[2][];
+		if ((boolean) parametros.get(MULTI_PASS)) {			
 			Double[] wh = (Double[]) parametros.get(WINDOWS_HEIGHT);
 			Double[] ww = (Double[]) parametros.get(WINDOWS_WIDTH);
+			Double[][] windowsSize = new Double[wh.length][];
 			for (int i = 0; i < wh.length; i++)
 				windowsSize[i] = new Double[] { wh[i], ww[i] };
 			elementosFiltrados.add(MatLabWrapper.CorrealcionCruzada(((Imagen) input.get(0)), ((Imagen) input.get(1)), windowsSize, (double) parametros.get(OVERLAP), "multin", 3));

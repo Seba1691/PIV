@@ -13,18 +13,16 @@ import pivLayer.MapaVectores;
 
 public class FiltroVelocidadY extends FiltroVisualizacion {
 
-	private static final String TAMANO_TOTAL = "TamañoTotal";
-	private static final String TAMANO_PIXEL = "TamañoPixel";
+	private static final String YMEDIO = "Y Medio";
 
 	public FiltroVelocidadY() {
-		this(1, 1);
+		this(0);
 	}
 
-	public FiltroVelocidadY(double tiempo, double tamanoPixel) {
+	public FiltroVelocidadY(int yMedio) {
 		super(1);
 		parametros = new HashMap<String, Object>();
-		parametros.put(TAMANO_TOTAL, tiempo);
-		parametros.put(TAMANO_PIXEL, tamanoPixel);
+		parametros.put(YMEDIO, yMedio);
 	}
 
 	@Override
@@ -32,7 +30,19 @@ public class FiltroVelocidadY extends FiltroVisualizacion {
 		try {
 			double[][] mat = ((MapaVectores) input).getMapaVectores();
 
-			int yMedio = (int) mat[mat.length / 2][1];
+			int yMedio = (int) parametros.get(YMEDIO);
+			
+			//Por defecto (con 0) toma la ventana del medio
+			if (yMedio == 0)
+				yMedio = (int) mat[mat.length / 2][1];
+			else { //Sino toma la ventana correspondiente al pixel que se dio como medio
+				int i = 0;
+				while (mat[i][1] < yMedio) {
+					i++;
+				}
+				yMedio = (int) mat[i][1];
+			}			
+			
 			int yAnt = 0;
 			int ySig = 0;
 
@@ -58,11 +68,11 @@ public class FiltroVelocidadY extends FiltroVisualizacion {
 
 			for (int j = 0; j < mat.length; j++)
 				if (mat[j][1] == yMedio || mat[j][1] == yAnt || mat[j][1] == ySig) {
-					Double r = result.get(mat[j][0] * 0.00014 / 0.1);
+					Double r = result.get(mat[j][0]);
 					if (r == null)
 						r = 0.0;
 					r = r + mat[j][6];
-					result.put(mat[j][0] * 0.00014 / 0.1, r);
+					result.put(mat[j][0], r);
 				}
 
 			for (Double k : result.keySet()) {
@@ -72,12 +82,6 @@ public class FiltroVelocidadY extends FiltroVisualizacion {
 
 			fop.close();
 
-			/*
-			 * List<Double[]> result = new ArrayList<Double[]>(); for (int i =
-			 * 0; i < mat.length; i++) if (mat[i][1] == yMedio) { result.add(new
-			 * Double[] { mat[i][0] * 0.00133 / 1, mat[i][6] });
-			 * System.out.println(mat[i][0] * 0.00133 / 1 + ", " + mat[i][6]); }
-			 */
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
